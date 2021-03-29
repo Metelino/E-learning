@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero is-info is-small block">
+    <div class="hero-body">
+        {% if user.is_staff %}
+        <p class="title">
+            Edytuj lekcję : {{ lesson.name }}
+        </p>
+        <p class="subtitle">
+            Dodawaj pliki do wybranych rodzajów nauczania
+        </p>
+        {% else %}
+        <p class="title">
+            Lekcja : {{ lesson.name }}
+        </p>
+        {% endif %}
+    </div>
+</section>
+<div class="container-fluid">
+    {% if user.is_staff %}
+    <form method="POST" enctype="multipart/form-data">
+        <div class='columns'>
+            <div class='column is-one-fifth'>
+                {% csrf_token %}
+                {% for field in node_form %}
+                <div class='field'>
+                    <label class='label'>{{ field.label_tag }}</label>
+                    <div class='control'>
+                        {{ field }}
+                    </div>
+                </div>
+                {% endfor %}
+                <input class='button' type="submit" value="Zapisz zmiany">
+            </div>
+            <div class='column'>
+                {{ files_form.management_form }}
+                <div class='columns'>
+                    {% for form in files_form %}
+                    <div class='column'>
+                        <div class='box'>
+                            <h1 class='title is-3'>{{ form.lesson_type.value }}</h1>
+                        </div>
+                        <div class='field'>
+                            {{ form }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+    <div class='columns'>
+        <div class='column is-one-fifth'></div>
+        {% for files in grouped_files %}
+        <div class='column'>
+            {% for file in files %}
+            <article class="media box">
+                <div class="media-content">
+                    <div class="content">
+                        <p>
+                        <strong>{{ file.lesson_file.name }}</strong>
+                        </p>
+                    </div>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+                        <a href='#' class="level-item">
+                            <span class="icon is-medium"><i class="fas fa-arrow-right"></i></span>
+                        </a>
+                        {% if user.is_staff %}
+                        <a href='{% url "courses:file_delete" file.pk %}' class="level-item">
+                            <span class="delete is-medium"><i class="fas fa-retweet"></i></span>
+                        </a>
+                        </div>
+                        {% endif %}
+                    </nav>
+                </div>
+                <!-- {% if user.is_staff %}
+                <div class="media-right">
+                    <a href='#'' class="delete"></a>
+                </div>
+                {% endif %} -->
+            </article>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.8.1/min/dropzone.min.js"></script>
+{% endblock %}

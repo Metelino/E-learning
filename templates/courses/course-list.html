@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero is-info is-small block">
+    <div class="hero-body">
+      <p class="title">
+        Lista kursów
+      </p>
+      <p class="subtitle">
+        Przejrzyj dostępne kursy
+      </p>
+    </div>
+  </section>
+<div class="container">
+    <div class='columns'>
+        {% if user.is_staff %}
+        <div class='column is-one-fifth'>
+            <a class='button is-large' href="{% url 'courses:course_add' %}">Dodaj kurs</a>
+        </div>
+        {% endif %}
+        <div class='column'>
+            {% if object_list %}
+            {% for kurs in object_list %}
+                <div class='card block'>
+                    <div class='card-header'>
+                        <p class="card-header-title">
+                            {{ kurs.name }}
+                        </p>
+                    </div>
+                    <div class="card-content">
+                        <p class="title">{{ kurs.desc }}</p>
+                        <p class="subtitle">{{ kurs.author }}</p>
+                    </div>
+                    <footer class="card-footer">
+                        <p class="card-footer-item">
+                        <span>
+                            <a href="{% url 'courses:course_edit' course_slug=kurs.slug %}">
+                                {% if user.is_staff %}
+                                    Edytuj kurs
+                                {% else %}
+                                    Zobacz kurs
+                                {% endif %}
+                            </a>
+                        </span>
+                        </p>
+                    </footer>
+                </div>
+            {% endfor %} 
+            {% else %}
+                <h3 class='title is-2'>Brak kursów</h3>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+ 

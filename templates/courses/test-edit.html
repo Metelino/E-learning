@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero is-info is-small block">
+    <div class="hero-body">
+        {% if user.is_staff %}
+        <p class="title">
+            Edytuj test : {{ lesson.name }}
+        </p>
+        <p class="subtitle">
+            Dodaj lub edytuj pytania
+        </p>
+        {% else %}
+        <p class="title">
+            Test : {{ lesson.name }}
+        </p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

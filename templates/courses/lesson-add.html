@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class='columns is-vcentered'></div>
+        <div class='column'>
+            <h1 class='title is-1'>Stwórz nową lekcję</h1>
+            <form method="POST">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class='field'>
+                    <label class='label'>{{ field.label_tag }}</label>
+                    <div class='control'>
+                        {{ field }}
+                    </div>
+                </div>
+                {% endfor %}
+                <input class='button' type="submit" value="Zapisz lekcję">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
