@@ -6,6 +6,9 @@ from pathlib import Path
 
 User = auth.get_user_model()
 
+def get_upload_path(instance, filename):
+    return f'node_{instance.node.id}_files/{filename}'
+
 class LessonFile(models.Model):
     LESSON_TYPE = [
         ('0', 'Wzrokowiec'),
@@ -14,7 +17,47 @@ class LessonFile(models.Model):
     ]
 
     lesson_type = models.CharField(max_length=10, choices=LESSON_TYPE, default='0')
-    lesson_file = models.FileField(upload_to='upload/', blank=True)
+    #lesson_file = models.FileField(upload_to='upload/', blank=True)
+    lesson_file = models.FileField(upload_to=get_upload_path, blank=True)
+    node = models.ForeignKey(to='Node', on_delete=models.CASCADE)
+
+    def get_name(self):
+        p = Path(self.lesson_file.path)
+        return p.stem
+
+    # def save(self, *args, **kwargs):
+    #     self.lesson_file.upload_to = str(self.node.id) + '_files/'
+    #     super().save(*args, **kwargs)
+
+    @classmethod
+    def get_files(self, node):
+        grouped_files = dict()
+        files = self.objects.filter(node = node)
+        for t in LessonFile.LESSON_TYPE:
+            grouped_files[t[0]] = files.filter(lesson_type=t[0])
+        return grouped_files
+
+
+    def get_absolute_url(self):
+        return reverse('courses:stream_file', kwargs={'file_pk':self.pk})
+
+class Answer(models.Model):
+    text = models.CharField(max_length=100, null=True)
+
+    def __str__(self):
+        return str(self.text)
+
+class Question(models.Model):
+    question_content = models.CharField(null=True, max_length=200)
+    answer_fields = models.ManyToManyField(Answer)
+    answer = models.ForeignKey(to=Answer, on_delete=models.CASCADE, related_name='right_answer', null=True)
+    node = models.ForeignKey(to='Node', on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return str(self.question_content)
+
+    def check_answer(self, answer):
+        return self.answer == answer
 
 class Node(models.Model):
     NODE_TYPE = [
@@ -25,6 +68,7 @@ class Node(models.Model):
     desc = models.CharField(max_length=1000)
     slug = models.SlugField(allow_unicode=True, blank=True, null=True)
     node_type = models.CharField(choices=NODE_TYPE, default='lesson', max_length=20)
+    course = models.ForeignKey(to='Course', on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -33,31 +77,12 @@ class Node(models.Model):
     def __str__(self):
         return str(self.name)
 
-class Question(models.Model):
-    question_content = models.CharField(null=True, max_length=200)
-    answers = models.CharField(null=True, max_length=30)
-
-class Test(Node):
-    questions = models.ManyToManyField(Question, blank=True)
-
-class Lesson(Node):
-    #name = models.CharField(max_length=100)
-    files = models.ManyToManyField(LessonFile, related_name='learning_files', blank=True)
-    #lesson_number = models.PositiveIntegerField(blank=True, null=True)
-    #desc = models.CharField(max_length=1000)
-    #slug = models.SlugField(allow_unicode=True, blank=True, null=True)
-
-    def get_grouped_files(self):
-        grouped_files = ['']
-        files = self.files.all()
-        for i in LessonFile.LESSON_TYPE:
-            grouped_files.append(files.filter(lesson_type=i))
-        return grouped_files
+def set_question():
+    return {'fields' : []}
 
 class Course(models.Model):
     name = models.CharField(max_length=100)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='autor')
-    nodes = models.ManyToManyField(Node, through='NodeInCourse')
     desc = models.CharField(max_length=1000)
     slug = models.SlugField(allow_unicode=True, blank=True, unique=True, null=True)
 
@@ -67,29 +92,3 @@ class Course(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
-
-    def add_node(self, node):
-        NodeInCourse.objects.create(course = self.pk, node = node.pk)
-        node.lesson_number = self.nodes.count()
-        node.save()
-
-    def get_course_view_url(self):
-        return reverse('courses:course_view', self.slug)
-
-    def get_course_edit_url(self):
-            return reverse('courses:course_edit', self.slug)
-
-class NodeInCourse(models.Model):
-    course = models.ForeignKey(Course, related_name='lessons_course', on_delete=models.CASCADE)
-    node = models.ForeignKey(Node, related_name='node_in_course', on_delete=models.CASCADE)
-    node_number = models.PositiveIntegerField(null=True)
-
-    class Meta:
-        unique_together = ['course', 'node']
-        ordering = ('node_number',)
-
-    @classmethod
-    def add_lesson(self, node, course):
-        x = self.objects.create(course=course, node=node)
-        x.node_number = course.nodes.count()
-        x.save()

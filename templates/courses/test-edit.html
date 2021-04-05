@@ -1,20 +1,84 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <section class="hero is-info is-small block">
     <div class="hero-body">
-        {% if user.is_staff %}
-        <p class="title">
-            Edytuj test : {{ lesson.name }}
-        </p>
-        <p class="subtitle">
-            Dodaj lub edytuj pytania
-        </p>
-        {% else %}
         <p class="title">
             Test : {{ lesson.name }}
         </p>
-        {% endif %}
+        <p class="subtitle">
+            Dodaj/edytuj pytania
+        </p>
     </div>
 </section>
+    <div class='columns'>
+        <div id='question-list' class='column is-one-fifth'>
+            <h2 class='title is-2'>
+                Lista pytań
+            </h2>
+            <div class='box'>
+            {% if questions %}
+                {% for q in questions %}
+                <article class="media box">
+                    <div class="media-content">
+                        <div class="content">
+                            <p>
+                            <strong>{{ q.question_content }}</strong>
+                            </p>
+                        </div>
+                        <nav class="level is-mobile">
+                            <div class="level-left">
+                            <a href='#' class="level-item">
+                                <span class="icon is-medium"><i class="fas fa-arrow-right"></i></span>
+                            </a>
+                            <a href='{% url "courses:question_delete" q.pk %}' class="level-item">
+                                <span class="delete is-medium"><i class="fas fa-retweet"></i></span>
+                            </a>
+                            </div>
+                        </nav>
+                    </div>
+                </article>
+                {% endfor %}
+            {% else %}
+                Brak pytań
+            {% endif %}
+            </div>
+        </div>
+        <div class='column'>
+                <div class='container'>
+                    <button onclick="add_question()" class='button'>Dodaj nowe pole</button>
+                    <button onclick="remove_question()" class='button'>Usuń ostatnie pole</button>
+                    <button onclick="submit_form()" class='button'>Zapisz pytanie</button>
+                    <form class='box' id='question-form' method="POST" action="{% url 'courses:question_add' lesson.pk %}">
+                        {% csrf_token %}
+                            <input type='hidden' id='question-count' name='question-count'>
+                            <div class='field'>
+                                <label class="label">Treść pytania</label>
+                                <div class='control'>
+                                    <input class='input' id='question-content' name='question-content' type='text' required>
+                                </div>
+                            </div>
+                            <div class='field'>
+                                <label class="label is-small">Odpowiedź 1</label>
+                                <div class='control'>
+                                    <input type="radio" id="radio-1" name="answer" value=0 checked>
+                                    <input class='input' id='question-1' name='question-1' type='text' required>
+                                </div>
+                            </div>
+                            <div class='field'>
+                                <label class="label is-small">Odpowiedź 2</label>
+                                <div class='control'>
+                                    <input type="radio" id="radio-2" name="answer" value=1>
+                                    <input class='input' id='question-2' name='question-2' type='text' required>
+                                </div>
+                            </div>
+                    </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/test-edit.js' %}"></script>
 {% endblock %}

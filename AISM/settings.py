@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
-    'courses'
+    'courses',
+    'lessons',
+    'tests',
 ]
 
 MIDDLEWARE = [
@@ -75,6 +77,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'AISM.wsgi.application'
 
+X_FRAME_OPTIONS = 'ALLOWALL'
+
+XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -124,6 +129,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIR = BASE_DIR / 'static'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

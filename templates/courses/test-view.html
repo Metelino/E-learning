@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero is-info is-small block">
+    <div class="hero-body">
+        <p class="title">
+            Test : {{ lesson.name }}
+        </p>
+        <p class="subtitle">
+            Odpowiedz na pytania
+        </p>
+    </div>
+</section>
+<div class="container-fluid">
+    <div class='columns is-vcentered'>
+        <form id='test' class='column box' method='POST'>
+            {% csrf_token %}
+            {{ q_forms.management_form }}
+            {% for form in q_forms %}
+                {% for field in form %}
+                <div class='field'>
+                    {{field.label_tag}}
+                    {{field}}
+                </div>
+                {% endfor %}
+            {% endfor %}
+            <input class='button' type="submit" value="Sprawdź wyniki">
+        </form>
+    </div>
+</div>
+{% endblock %}

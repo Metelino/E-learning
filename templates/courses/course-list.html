@@ -11,7 +11,7 @@
       </p>
     </div>
   </section>
-<div class="container">
+<!-- <div class="container is-fluid"> -->
     <div class='columns'>
         {% if user.is_staff %}
         <div class='column is-one-fifth'>
@@ -34,13 +34,16 @@
                     <footer class="card-footer">
                         <p class="card-footer-item">
                         <span>
+                            {% if user.is_staff %}
                             <a href="{% url 'courses:course_edit' course_slug=kurs.slug %}">
-                                {% if user.is_staff %}
-                                    Edytuj kurs
-                                {% else %}
-                                    Zobacz kurs
-                                {% endif %}
+                                Edytuj kurs
                             </a>
+                            {% else %}
+                            <a href="{% url 'courses:course_view' course_slug=kurs.slug %}">
+                                    Zobacz kurs
+                                </a>
+                            {% endif %}
+                            
                         </span>
                         </p>
                     </footer>
@@ -51,6 +54,6 @@
             {% endif %}
         </div>
     </div>
-</div>
+<!-- </div> -->
 {% endblock %}
  

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Course, Lesson, Node, LessonFile
+from .models import Course, Node, LessonFile, Question
 
 class CourseForm(forms.ModelForm):
     class Meta():
@@ -34,7 +34,7 @@ class NodeForm(forms.ModelForm):
     ]
     class Meta():
         model = Node
-        exclude = ['files', 'slug']
+        exclude = ['files', 'slug', 'course']
         labels = {
             'name' : 'Tytuł lekcji',
             'desc' : 'Opis lekcji',
@@ -48,20 +48,10 @@ class NodeEditForm(forms.ModelForm):
     ]
     class Meta():
         model = Node
-        exclude = ['files', 'slug', 'node_type']
+        exclude = ['files', 'slug', 'node_type', 'course']
         labels = {
             'name' : 'Tytuł lekcji',
             'desc' : 'Opis lekcji',
-        }
-
-class LessonEditForm(forms.ModelForm):
-    class Meta():
-        model = Lesson
-        exclude = ['files', 'slug']
-        labels = {
-            'name' : 'Tytuł lekcji',
-            'desc' : 'Opis lekcji',
-            'test' : 'Czy test'
         }
 
 class FileForm(forms.ModelForm):
@@ -77,3 +67,27 @@ class FileForm(forms.ModelForm):
         }
 
 FileFormSet = forms.formset_factory(FileForm, extra=0)
+
+class QCreateForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['question_content', 'answer_fields', 'answer']
+        widgets = {
+            'question_content' : forms.HiddenInput(attrs={'id':'real_content'}),
+            'answer_fields' : forms.HiddenInput(attrs={'id':'real_fields'}),
+            'answer' : forms.HiddenInput(attrs={'id':'real_answer'}),
+        }
+
+class QuestionForm(forms.ModelForm):
+    class Meta():
+        fields = ['answer_fields']
+        widgets = {'answer_fields': forms.CheckboxSelectMultiple}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        #print(self.instance.id)
+        self.fields['answer_fields'].label = self.instance.question_content
+        self.fields['answer_fields'].queryset = self.instance.answer_fields.all()
+
+QFormSet = forms.modelformset_factory(Question, form=QuestionForm, extra=0) 
+

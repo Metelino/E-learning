@@ -1,34 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
     <h1 class='title is-2'>Lista lekcji</h1>
     {% if lessons %}
     {% for lesson in lessons %}
-        <article class="media">
+        <article class="media box">
             <div class="media-content">
                 <div class="content">
                     <p>
-                    <strong>{{ lesson.name }}</strong>
+                    <strong>{{ lesson.name }}</strong> - <i>{{ lesson.node_type }}</i>
                     <br>
                     {{ lesson.desc }}
                     </p>
                 </div>
                 <nav class="level is-mobile">
                     <div class="level-left">
-                    <a href='{% url "courses:lesson_view" lesson_slug=lesson.slug course_slug=course_slug %}' class="level-item">
+                    <a href='{% url "courses:node_view" lesson.pk %}' class="level-item">
                         <span class="icon is-medium"><i class="fas fa-arrow-right"></i></span>
                     </a>
                     </div>
                 </nav>
-            </div>
-            <div class="media-right">
-                <button class="delete"></button>
             </div>
         </article>
     {% endfor %}
     {% else %}
         <h1 class='title is 2'>Brak lekcji</h1>
     {% endif %}
-</div>
 {% endblock %}
