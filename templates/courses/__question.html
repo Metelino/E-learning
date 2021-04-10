@@ -1,0 +1,35 @@
+<!-- <article class="media box">
+    <div class="media-content">
+        <div class="content">
+            <p>
+            <strong>{{ q.question_content }}</strong>
+            </p>
+        </div>
+        <nav class="level is-mobile">
+            <div class="level-left">
+            <a href='{% url "courses:question_delete" q.pk %}' class="level-item">
+                <span class="delete is-medium"><i class="fas fa-retweet"></i></span>
+            </a>
+            </div>
+        </nav>
+    </div>
+</article> -->
+
+<div class="card block">
+    <header class="card-header">
+        <p class="card-header-title">
+            {{ q.text }}
+        </p>
+    </header>
+    <div class="card-content">
+        <div class="content">
+            {% for ans in q.answers.all %}
+            <p><i>{{ans.text}}</i></p>
+            {% endfor %}
+        </div>
+    </div>
+    <footer class="card-footer">
+        <a href="#" class="card-footer-item"><i class="fas fa-edit"></i></a>
+        <a href='{% url "courses:question_delete" q.pk %}' class="card-footer-item"><i class="fas fa-minus-square"></i></a>
+    </footer>
+</div>

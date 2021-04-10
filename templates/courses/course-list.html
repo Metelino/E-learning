@@ -1,24 +1,28 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <section class="hero is-info is-small block">
     <div class="hero-body">
-      <p class="title">
+      <p class="title is-4">
         Lista kursów
       </p>
-      <p class="subtitle">
+      <p class="subtitle is-6">
         Przejrzyj dostępne kursy
       </p>
     </div>
-  </section>
-<!-- <div class="container is-fluid"> -->
-    <div class='columns'>
-        {% if user.is_staff %}
-        <div class='column is-one-fifth'>
+</section>
+
+<div class='columns'>
+    {% if user.is_staff %}
+    <div class='column is-narrow' style='position: sticky;'>
+        <div class='box'>
             <a class='button is-large' href="{% url 'courses:course_add' %}">Dodaj kurs</a>
         </div>
-        {% endif %}
-        <div class='column'>
+    </div>
+    {% endif %}
+    <div class='column'>
+        <div class='box'>
             {% if object_list %}
             {% for kurs in object_list %}
                 <div class='card block'>
@@ -28,24 +32,27 @@
                         </p>
                     </div>
                     <div class="card-content">
-                        <p class="title">{{ kurs.desc }}</p>
+                        <p class="title is-5">{{ kurs.desc }}</p>
                         <p class="subtitle">{{ kurs.author }}</p>
                     </div>
                     <footer class="card-footer">
-                        <p class="card-footer-item">
-                        <span>
-                            {% if user.is_staff %}
-                            <a href="{% url 'courses:course_edit' course_slug=kurs.slug %}">
-                                Edytuj kurs
-                            </a>
-                            {% else %}
-                            <a href="{% url 'courses:course_view' course_slug=kurs.slug %}">
-                                    Zobacz kurs
-                                </a>
-                            {% endif %}
-                            
-                        </span>
-                        </p>
+                        {% if user.is_staff %}
+                        <a class="card-footer-item" href="{% url 'courses:course_edit' course_slug=kurs.slug %}">
+                            Edytuj kurs
+                        </a>
+                        <a class="card-footer-item" href="{% url 'courses:course_delete' course_slug=kurs.slug %}">
+                            Usuń kurs
+                        </a>
+                        {% else %}
+                        <a class="card-footer-item" href="{% url 'courses:course_view' course_slug=kurs.slug %}">
+                            Zobacz kurs
+                        </a>
+                        {% if kurs not in user.profile.courses.all %}
+                        <a href='#' class="card-footer-item" onclick='course_signup(event)' data-url="{% url 'accounts:course_signup' course_slug=kurs.slug %}">
+                            Zapisz się na kurs
+                        </a>
+                        {% endif %}
+                        {% endif %}   
                     </footer>
                 </div>
             {% endfor %} 
@@ -54,6 +61,11 @@
             {% endif %}
         </div>
     </div>
-<!-- </div> -->
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src='{% static "js/course-list.js" %}'></script>
 {% endblock %}
  

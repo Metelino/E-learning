@@ -4,84 +4,50 @@
 <section class="hero is-info is-small block">
     <div class="hero-body">
         {% if user.is_staff %}
-        <p class="title">
+        <p class="title is-4">
             Edytuj kurs
         </p>
-        <p class="subtitle">
+        <p class="subtitle is-6">
             Edytuj wybrany kurs
         </p>
         {% else %}
-        <p class="title">
+        <p class="title is-4">
             Przejrzyj wybrany kurs
         </p>
         {% endif %}
     </div>
 </section>
-    <div class='columns'>
-        {% if user.is_staff %}
-        <div class='column'>
-            <div class='container'>
-                <a href='{% url "courses:node_add" course_slug=course_slug %}' class='button block'><strong>Dodaj lekcję</strong></a>
-                <a href='#' class='button block'><strong>Zmień kolejność lekcji</strong></a>
-            </div>
-            <form class='box' method="POST">
-                {% csrf_token %}
-                {% for field in form %}
-                <div class='field'>
-                    <label class='label'>{{ field.label_tag }}</label>
-                    <div class='control'>
-                        {{ field }}
-                    </div>
+<div class='columns'>
+    <div class='column'>
+        <form class='box' method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class='field'>
+                <label class='label'>{{ field.label_tag }}</label>
+                <div class='control'>
+                    {{ field }}
                 </div>
-                {% endfor %}
-                <input class='button' type="submit" value="Zapisz zmiany">
-            </form>
-        </div>
-        {% endif %}
-        <div class='column box'>
-            <h1 class='box title is-2 has-text-centered'>Lekcje</h1>
+            </div>
+            {% endfor %}
+            <input class='button' type="submit" value="Zapisz zmiany">
+        </form>
+    </div>
+    <div class='column'>
+        <div class='box'>
+            <div class='block'>
+                <span class='title is-2 has-text-centered'>Lista lekcji</span>
+                <a href='{% url "courses:node_add" course_slug=course.slug %}' class='button is-pulled-right'>Dodaj lekcję</a>
+                <a href='{% url "courses:node_delete" node_pk=course.get_last_node.pk %}' class='button is-pulled-right'>Usuń ostatnią lekcję</a>
+                <!-- <a href='#' class='button block'><strong>Zmień kolejność lekcji</strong></a> -->
+            </div>
             {% if lessons %}
             {% for lesson in lessons %}
-                <article class="media box">
-                    <div class="media-content">
-                        <div class="content">
-                            <p>
-                            <strong>{{ lesson.name }}</strong>
-                            <br>
-                            {{ lesson.desc }}
-                            </p>
-                        </div>
-                        {% if user.is_authenticated %}
-                        <nav class="level is-mobile">
-                            <div class="level-left">
-                            <a href='{% url "courses:node_edit" lesson.pk %}' class="level-item">
-                                <span class="icon is-medium"><i class="fas fa-arrow-right"></i></span>
-                            </a>
-                            {% if user.is_staff %}
-                            <a href='#' class="level-item">
-                                <span class="icon is-medium"><i class="fas fa-reply"></i></span>
-                            </a>
-                            <a class="level-item">
-                                <span class="icon is-medium"><i class="fas fa-retweet"></i></span>
-                            </a>
-                            <a href='{% url "courses:node_delete" lesson.pk %}' class="level-item">
-                                <span class="delete is-medium"><i class="fas fa-retweet"></i></span>
-                            </a>
-                            </div>
-                            {% endif %}
-                        </nav>
-                        {% endif %}
-                    </div>
-                    <!-- {% if user.is_staff %}
-                    <div class="media-right">
-                        <a href='#'' class="delete"></a>
-                    </div>
-                    {% endif %} -->
-                </article>
+                {% include 'courses/__lesson.html' %}
             {% endfor %}
             {% else %}
                 <h1 class='title is 2 has-text-centered'>Brak lekcji</h1>
             {% endif %}
         </div>
     </div>
+</div>
 {% endblock %}

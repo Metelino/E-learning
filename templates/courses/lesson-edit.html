@@ -1,27 +1,29 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<section class="hero is-info is-small block">
-    <div class="hero-body">
-        {% if user.is_staff %}
-        <p class="title">
-            Edytuj lekcję : {{ lesson.name }}
-        </p>
-        <p class="subtitle">
-            Dodawaj pliki do wybranych rodzajów nauczania
-        </p>
-        {% else %}
-        <p class="title">
-            Lekcja : {{ lesson.name }}
-        </p>
-        {% endif %}
+<div class='columns is-vcentered'>
+    <div class='column'>
+        <section class="hero is-info is-small block">
+            <div class="hero-body">
+                <p class="title is-4">
+                    Edytuj lekcję : {{ lesson.name }}
+                </p>
+                <p class="subtitle is-6">
+                    Dodawaj pliki do wybranych rodzajów nauczania
+                </p>
+            </div>
+        </section>
     </div>
-</section>
-<div class="container-fluid">
-    {% if user.is_staff %}
-    <form method="POST" enctype="multipart/form-data">
-        <div class='columns'>
-            <div class='column is-one-fifth'>
+    <div class='column is-narrow'>
+        <a class='button' href='{% url "courses:node_view" lesson.pk %}'>Widok Studenta</a>
+    </div>
+</div>
+
+<div class='columns'>
+    <div class='column is-one-fifth'>
+        <div class='box'>
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% for field in node_form %}
                 <div class='field'>
@@ -32,60 +34,33 @@
                 </div>
                 {% endfor %}
                 <input class='button' type="submit" value="Zapisz zmiany">
-            </div>
-            <div class='column'>
-                {{ files_form.management_form }}
-                <div class='columns'>
-                    {% for form in files_form %}
-                    <div class='column'>
-                        <div class='box'>
-                            <h1 class='title is-3'>{{ form.lesson_type.value }}</h1>
-                        </div>
-                        <div class='field'>
-                            {{ form }}
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
+            </form>
         </div>
-    </form>
-    {% endif %}
-    <div class='columns'>
-        <div class='column is-one-fifth'></div>
-        {% for files in grouped_files %}
-        <div class='column'>
-            {% for file in files %}
-            <article class="media box">
-                <div class="media-content">
-                    <div class="content">
-                        <p>
-                        <strong>{{ file.get_name }}</strong>
-                        </p>
-                    </div>
-                    <nav class="level is-mobile">
-                        <div class="level-left">
-                        <a href='#' class="level-item">
-                            <span class="icon is-medium"><i class="fas fa-arrow-right"></i></span>
-                        </a>
-                        {% if user.is_staff %}
-                        <a href='{% url "courses:file_delete" file.pk %}' class="level-item">
-                            <span class="delete is-medium"><i class="fas fa-retweet"></i></span>
-                        </a>
-                        </div>
-                        {% endif %}
-                    </nav>
+    </div>
+    <div class='column'>
+        <form id='file-form' class='box' enctype="multipart/form-data" method='POST' action='{% url "courses:file_add" lesson.pk %}'>
+            {% csrf_token %}
+            {% for field in files_form %}
+            <div class='field'>
+                <label class='label'>{{ field.label_tag }}</label>
+                <div class='control'>
+                    {{ field }}
                 </div>
-                <!-- {% if user.is_staff %}
-                <div class="media-right">
-                    <a href='#'' class="delete"></a>
-                </div>
-                {% endif %} -->
-            </article>
+            </div>
             {% endfor %}
-        </div>
+            <input class='button' type="submit" value="Zapisz plik">
+        </form>
+        <div class='box' id='file-list'>
+        {% for file in files %}
+            {% include 'courses/__file.html' %}
         {% endfor %}
+        </div>
     </div>
 </div>
+
+{% endblock %}
+
+{% block scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.8.1/min/dropzone.min.js"></script>
+<script src="{% static 'js/lesson-edit.js' %}"></script>
 {% endblock %}

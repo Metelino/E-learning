@@ -1,0 +1,12 @@
+{% for file in files %}
+<article class="media box">
+    <div class="media-content">
+        <div class="content">
+            <p style='word-wrap: break-word;'>
+            <strong>{{ file.get_name }}</strong>
+            </p>
+        </div>
+        <button class='button' data-file-url="{{ file.get_absolute_url }}" onclick='set_file(event)'>Zobacz</button>
+    </div>
+</article>
+{% endfor %}

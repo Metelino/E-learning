@@ -2,41 +2,59 @@
 {% load static %}
 
 {% block content %}
-    <section class="hero is-info is-small block">
-        <div class="hero-body">
-            <p class="title">
-                Przeglądaj lekcję : {{ lesson.name }}
-            </p>
-            <p class="subtitle">
-                Przejrzyj dostępne materiały
-            </p>
+    <div class='columns is-vcentered'>
+        <div class='column'>
+            <section class="hero is-info is-small block">
+                <div class="hero-body">
+                    <p class="title is-4">
+                        Lekcja : {{ lesson.name }}
+                    </p>
+                    <p class="subtitle is-6">
+                        Przejrzyj dostępne materiały
+                    </p>
+                </div>
+            </section>
         </div>
-    </section>
-    <div class='columns is-flex-grow-1'>
+        {% if user.is_staff %}
+        <div class='column is-narrow'>
+            <a class='button' href='{% url "courses:node_edit" lesson.pk %}'>Widok Nauczyciela</a>
+        </div>
+        {% endif %}
+    </div>
+    <div class='columns' style='height : 100%'>
         <div class='column'>
             <object class='box' id='media-player' style='width:100%; height:100%;'></object>
         </div>
-        <div class='column is-narrow'>
+        <div class='column is-2'>
+            {% if not user.is_staff %}
             <div class='box'>
-                    <h2 class='title is-2'>Zaliczone</h2>
-                    <input type='checkbox' class='is-large'>
+                {% if lesson in user.profile.nodes_passed.all %}
+                <input data-url="{% url 'courses:lesson_passed' lesson.pk %}" onclick="pass_lesson(event)" type='checkbox' disabled checked>
+                <span><strong>Zalicz lekcję</strong></span> 
+                {% else %}
+                <input data-url="{% url 'courses:lesson_passed' lesson.pk %}" onclick="pass_lesson(event)" type='checkbox'>
+                <span><strong>Zalicz lekcję</strong></span> 
+                {% endif %}
             </div>
-            {% for file in files %}
-            <article class="media box">
-                <div class="media-content">
-                    <div class="content">
-                        <p style='word-wrap: break-word;'>
-                        <strong>{{ file.get_name }}</strong>
-                        </p>
+            {% else %}
+            <div class='box'>
+                <form id='learning-form' method='POST' action="{% url 'accounts:change_learning' %}">
+                    {% csrf_token %}
+                    <div class=field>
+                        <div class='label'>
+                            {{l_form.learning_type.label_tag}}
+                        </div>
+                        <div class='control'>
+                            {{l_form.learning_type}}
+                        </div>
                     </div>
-                    <button class='button' data-file-url="{{ file.get_absolute_url }}" onclick='set_file(event)'>Zobacz</button>
-                    <!-- <nav class="level">
-                        <div class="level-right">
-                        <span class="icon is-medium"><i class="fas fa-arrow-right"></i></span>
-                    </nav> -->
-                </div>
-            </article>
-            {% endfor %}
+                    <!-- <input type='submit' value='Zmień typ'> -->
+                </form>
+            </div>
+            {% endif %}
+            <div class='file-list'>
+                {% include 'courses/__files.html' %}
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -1,10 +1,10 @@
 from django import forms
-from .models import Course, Node, LessonFile, Question
+from .models import Course, Node, LessonFile, Question, Answer
 
 class CourseForm(forms.ModelForm):
     class Meta():
         model = Course
-        exclude = ['nodes', 'author', 'slug']
+        fields = ['name', 'desc']
         labels = {
             'name' : 'Tytuł kursu',
             'desc' : 'Opis kursu'
@@ -17,7 +17,7 @@ class CourseForm(forms.ModelForm):
 class CourseEditForm(forms.ModelForm):
     class Meta():
         model = Course
-        exclude = ['nodes', 'author', 'slug']
+        fields = ['name', 'desc']
         labels = {
             'name' : 'Tytuł kursu',
             'desc' : 'Opis kursu'
@@ -34,7 +34,7 @@ class NodeForm(forms.ModelForm):
     ]
     class Meta():
         model = Node
-        exclude = ['files', 'slug', 'course']
+        fields = ['name', 'desc', 'node_type']
         labels = {
             'name' : 'Tytuł lekcji',
             'desc' : 'Opis lekcji',
@@ -48,22 +48,27 @@ class NodeEditForm(forms.ModelForm):
     ]
     class Meta():
         model = Node
-        exclude = ['files', 'slug', 'node_type', 'course']
+        fields = ['name', 'desc']
         labels = {
             'name' : 'Tytuł lekcji',
             'desc' : 'Opis lekcji',
+        }
+        widgets = {
+            'name' : forms.TextInput(attrs = {'class' : 'input'}),
+            'desc': forms.Textarea(attrs={'rows': 10, 'class':'textarea', 'style':'resize:none;'}),
         }
 
 class FileForm(forms.ModelForm):
     class Meta():
         model = LessonFile
         fields = ['lesson_type', 'lesson_file']
-        widgets = {
-            'lesson_type' : forms.HiddenInput(),
-            #'lesson_file' : forms.FileInput(attrs={'class':'file-input'})
-        }
+        # widgets = {
+        #     # 'lesson_type' : forms.HiddenInput(),
+        #     #'lesson_file' : forms.FileInput(attrs = {'class':"file-input"})
+        # }
         labels = {
-            'lesson_file' : ''
+            'lesson_file' : 'Plik',
+            'lesson_type' : 'Typ uczenia się',
         }
 
 FileFormSet = forms.formset_factory(FileForm, extra=0)
@@ -71,23 +76,52 @@ FileFormSet = forms.formset_factory(FileForm, extra=0)
 class QCreateForm(forms.ModelForm):
     class Meta:
         model = Question
-        fields = ['question_content', 'answer_fields', 'answer']
+        fields = ['text']
+        labels = {'text': 'Treść pytania'}
         widgets = {
-            'question_content' : forms.HiddenInput(attrs={'id':'real_content'}),
-            'answer_fields' : forms.HiddenInput(attrs={'id':'real_fields'}),
-            'answer' : forms.HiddenInput(attrs={'id':'real_answer'}),
+            'text' : forms.TextInput(attrs = {'class':'input'}),
         }
+
+class AnswerCreateForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ['text', 'correct']
+        widgets = {
+            'text' : forms.TextInput(attrs = {'class':'input', 'style':'display:inline-block;'}),
+        }
+        labels = {
+            'text' : '',
+            'correct' : ''
+        }
+
+AnswerCreateFormSet = forms.modelformset_factory(Answer, extra=2, form=AnswerCreateForm)
+#AnswerCreateFormSet = forms.modelformset_factory(Answer, extra=2, fields=['text','correct'])
+
+class QuestionEditForm(forms.ModelForm):
+    model = Question
 
 class QuestionForm(forms.ModelForm):
     class Meta():
-        fields = ['answer_fields']
-        widgets = {'answer_fields': forms.CheckboxSelectMultiple}
+        model = Question
+        fields = ['answers']
+        widgets = {'answers': forms.CheckboxSelectMultiple}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['answers'].label = self.instance.text
+        self.fields['answers'].queryset = self.instance.answers.all()
+        self.fields['answers'].initial = Answer.objects.none()
+        
         #print(self.instance.id)
-        self.fields['answer_fields'].label = self.instance.question_content
-        self.fields['answer_fields'].queryset = self.instance.answer_fields.all()
+        
+
+    def check_answers(self):
+        correct = self.instance.answers.filter(correct=True)
+        print(correct)
+        print(self.cleaned_data['answers'])
+        return set(self.cleaned_data['answers']) == set(correct)
+        
+
 
 QFormSet = forms.modelformset_factory(Question, form=QuestionForm, extra=0) 
-
+#AnswerFormSet = forms.modelformset_factory(Answer, extra=0, fields=['text'])

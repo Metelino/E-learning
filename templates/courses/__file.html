@@ -1,0 +1,24 @@
+<div class="card block">
+    <div class="card-content">
+        <div class='media'>
+            <div class="media-left">
+                {% if file.lesson_type == '0' %}
+                <span class="icon is-medium"><i class="fas fa-eye"></i></span>
+                {% elif file.lesson_type == '1' %}
+                <span class="icon is-medium"><i class="fab fa-accessible-icon"></i></span>
+                {% else %}
+                <span class="icon is-medium"><i class="fas fa-assistive-listening-systems"></i></span>
+                {% endif %} 
+            </div>
+            <div class="media-content">
+                <i>{{ file.get_name }}</i>
+            </div>
+        </div>
+    </div>
+    {% if user.is_authenticated %}
+    <footer class="card-footer">
+        <!-- <a href='#' class="card-footer-item"><i class="fas fa-edit"></i></a> -->
+        <a href='{% url "courses:file_delete" file.pk %}' onclick='delete_file(event)' class="card-footer-item"><i class="fas fa-minus-square"></i></a>
+    </footer>
+    {% endif %}
+</div>

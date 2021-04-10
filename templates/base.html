@@ -5,31 +5,33 @@
   <meta charset="utf-8">
   <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
   <title>E-learning</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css"> -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.2/css/bulma.min.css'>
   <style>
-    /* html,body {
-    height:100%;
-} */
     body{
       color : black;
-      background: rgba(0, 0, 0, 0.234);
+      height : 100%;
       box-sizing: border-box;
     }
     .main-column{
       display : flex;
       flex-direction: column;
-      position : absolute;
+      height : 100vh;
+      /* position : absolute;
       bottom:0;
       top:0;
       left:0;
       right:0;
       height : auto;
-      margin : 5px;
+      margin : 5px; */
     }
     .main-content{
       flex : 1;
-      padding : 10px;
+      /* overflow : auto; */
+      display : flex;
+      flex-direction: column;
+      align-content: stretch;
     }
   </style>
 </head>
@@ -53,6 +55,13 @@
             <div class='navbar-item is-hoverable'>
               <a href="{% url 'courses:course_list' %}" class="navbar-link">Przeglądaj kursy</a>
             </div>
+            {% if user.is_authenticated %}
+              {% if not user.is_staff %}
+              <div class='navbar-item is-hoverable'>
+                <a href="{% url 'accounts:profile' %}" class="navbar-link">Konto</a>
+              </div>
+              {% endif %}
+            {% endif %}
         </div>
         <div class="navbar-end">
           {% if user.is_authenticated %}
@@ -73,13 +82,13 @@
         </div>
       </div>
     </nav>
-    
-    <!-- overflow : auto; -->
-    <div class="container is-fluid main-content" style='display : flex; flex-direction: column;'>
+    <div class="container is-fluid main-content p-3">
+    <!-- <div class="container is-fluid main-content block" style='display : flex; flex-direction: column;'> -->
       {% block content %}
       {% endblock %}
     </div>
   </div>
+  <div style="position : absolute; display: none;"></div>
   {% block scripts %}
   {% endblock %}
 </body>

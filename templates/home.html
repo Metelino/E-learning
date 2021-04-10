@@ -1,8 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Welcome to the Homepage!</h1>
-{% for i in "x"|rjust:"100" %}
-<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta reiciendis ducimus dolores, quis quasi ad vero qui quae corporis? Ex commodi expedita necessitatibus enim repudiandae, corrupti harum ipsa nulla cumque?</p>
-
-{% endfor %}
+<section class="hero is-info is-large" style='flex : 1'>
+    <div class="hero-body">
+        <p class="title">
+            Witaj na stronie
+        </p>
+        <p class="subtitle">
+            Zapisz się na wybrany kurs
+        </p>
+    </div>
+</section>
 {% endblock %}
+

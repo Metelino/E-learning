@@ -1,0 +1,51 @@
+<!-- <article class="media box">
+    <div class="media-content">
+        <div class="content">
+            <p>
+            <strong>{{ lesson.name }}</strong> - <i>{{lesson.node_type}}</i>
+            <br>
+            {{ lesson.desc }}
+            </p>
+        </div>
+        {% if user.is_authenticated %}
+        <nav class="level is-mobile">
+            <div class="level-left">
+                <a href='{% url "courses:node_edit" lesson.pk %}' class="level-item">
+                    <span class="icon is-medium"><i class="fas fa-arrow-right"></i></span>
+                </a>
+                {% if user.is_staff %}
+                <a href='{% url "courses:node_delete" lesson.pk %}' class="level-item">
+                    <span class="delete is-medium"><i class="fas fa-retweet"></i></span>
+                </a>
+                </div>
+            {% endif %}
+        </nav>
+        {% endif %}
+    </div>
+</article> -->
+
+<div class="card block">
+    <header class="card-header">
+        <p class="card-header-title">
+            {{ lesson.name }}<i> - {{ lesson.node_type }}</i>
+        </p>
+    </header>
+    <div class="card-content">
+        <div class="content">
+            {{ lesson.desc }}
+        </div>
+    </div>
+    {% if user.is_authenticated %}
+    <footer class="card-footer">
+        {% if user.is_staff %}
+        <a href='{% url "courses:node_view" lesson.pk %}' class="card-footer-item"><i class="fas fa-arrow-right"></i></a>
+        <a href='{% url "courses:node_edit" lesson.pk %}' class="card-footer-item"><i class="fas fa-edit"></i></a>
+        <!-- <a href='{% url "courses:node_delete" lesson.pk %}' class="card-footer-item"><i class="fas fa-minus-square"></i></a> -->
+        {% elif lesson.course in user.profile.courses.all %}
+            {% if lesson.node_number == 0 or lesson.get_prev in user.profile.nodes_passed.all %}
+            <a href='{% url "courses:node_view" lesson.pk %}' class="card-footer-item"><i class="fas fa-arrow-right"></i></a>
+            {% endif %}
+        {% endif %}
+    </footer>
+    {% endif %}
+</div>
