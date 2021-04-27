@@ -1,27 +1,31 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class='container'>
     <div class='columns is-vcentered'>
-        <div class='column'>
-            
+        <div class='column is-half'>
             <div class='box'>
-                <h1 class='title is-2'>
-                    {% if passed == True %}
-                    Gratulacje, zaliczyłeś test!
-                    {% else %}
-                    Nie udało się!
-                    {% endif %}
-                </h1>
+                <section class='section'>
+                    <p class='title is-3'>Wynik testu</p>
+                    <p class='subtitle'>
+                        {% if passed %}
+                        Gratulacje, zaliczyłeś test!
+                        {% else %}
+                        Nie udało się!
+                        {% endif %}
+                    </p>
+                </section>
             </div>
         </div>
         <div class='column'>
             <div class='box'>
-                <a class='button' href='{% url "courses:node_view" lesson.pk %}'>
+                <a class='button box' href='{% url "courses:node_view" lesson.pk %}'>
                     Rozwiąż test ponownie
                 </a>
-                <a class='button' href='{% url "courses:course_view" lesson.course.slug %}'>
+                <a class='button box' href='{% url "courses:course_view" lesson.course.slug %}'>
                     Wróć do kursu
                 </a>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

@@ -1,22 +1,5 @@
-<!-- <article class="media box">
-    <div class="media-content">
-        <div class="content">
-            <p>
-            <strong>{{ q.question_content }}</strong>
-            </p>
-        </div>
-        <nav class="level is-mobile">
-            <div class="level-left">
-            <a href='{% url "courses:question_delete" q.pk %}' class="level-item">
-                <span class="delete is-medium"><i class="fas fa-retweet"></i></span>
-            </a>
-            </div>
-        </nav>
-    </div>
-</article> -->
-
-<div class="card block">
-    <header class="card-header">
+<div class="card block {{class}}" hx-target='this' _="{{script}}">
+    <header class="card-header has-background-primary">
         <p class="card-header-title">
             {{ q.text }}
         </p>
@@ -29,7 +12,11 @@
         </div>
     </div>
     <footer class="card-footer">
-        <a href="#" class="card-footer-item"><i class="fas fa-edit"></i></a>
-        <a href='{% url "courses:question_delete" q.pk %}' class="card-footer-item"><i class="fas fa-minus-square"></i></a>
+        <!-- <a href="#" _='on click set display to none on me then set display to block on closest .card' 
+        class="card-footer-item"><i class="fas fa-edit"></i></a> -->
+        <a href="#" hx-swap='outerHTML' hx-get="{% url 'courses:question_update' q.pk %}" class="card-footer-item"><i class="fas fa-edit"></i></a>
+        <a href='#' hx-confirm='Czy napewno chcesz usunąć pytanie?' hx-swap='outerHTML'
+            hx-delete='{% url "courses:question_delete" q.pk %}' class="card-footer-item"><i class="fas fa-minus-square"></i></a>
     </footer>
 </div>
+   

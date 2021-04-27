@@ -1,17 +1,17 @@
 {% extends "base.html" %}
-
+{% load bulma_tags %}
 
 {% block content %}
 <div class="container">
-    <h1>Sign Up</h1>
+    <h1 class='title is-2'>Zarejestruj się</h1>
     <form method="POST">
         {% csrf_token %}
-        {% for field in form %}
+        {{ form|bulma }}
+        <!-- {% for field in form %}
             <p>{{ field.label_tag }}</p>
             <p>{{ field }}</p>
-            <!-- <p>{{ field.help_text }}</p> -->
-        {% endfor %}
-        <input type="submit" value="Sign Up" class="btn btn-default">
+        {% endfor %} -->
+        <input type="submit" value="Sign Up" class="button">
     </form>
 </div>
 {% endblock %}

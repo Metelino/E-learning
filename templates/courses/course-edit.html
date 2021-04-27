@@ -1,52 +1,51 @@
 {% extends "base.html" %}
+{% load bulma_tags %}
 
 {% block content %}
 <section class="hero is-info is-small block">
     <div class="hero-body">
-        {% if user.is_staff %}
         <p class="title is-4">
-            Edytuj kurs
+            {{course.name}}
         </p>
         <p class="subtitle is-6">
-            Edytuj wybrany kurs
+            {% if user.is_staff %}
+                Edytuj kurs
+            {% else %}
+                Przejrzyj wybrany kurs
+            {% endif %}
         </p>
-        {% else %}
-        <p class="title is-4">
-            Przejrzyj wybrany kurs
-        </p>
-        {% endif %}
     </div>
 </section>
 <div class='columns'>
     <div class='column'>
-        <form class='box' method="POST">
-            {% csrf_token %}
-            {% for field in form %}
-            <div class='field'>
-                <label class='label'>{{ field.label_tag }}</label>
-                <div class='control'>
-                    {{ field }}
-                </div>
+        <div style='position:sticky; top:5%;'>
+            <form class='box' method="POST" hx-swap='none' hx-post="{% url 'courses:course_edit' course.slug %}" >
+                {% csrf_token %}
+                {{ form|bulma }}
+                <input class='button is-success' type="submit" value="Zapisz zmiany">
+            </form>
+            <div class='is-pulled-right box'>
+                <a href='{% url "courses:node_add" course_slug=course.slug %}' class='button is-success'>Dodaj lekcję</a>
+                {% if course.node_count > 0 %}
+                <button id='delete-lesson' hx-target='#lesson-list' hx-confirm="Czy napweno chcesz usunąć lekcję?" 
+                hx-delete='{% url "courses:node_delete" node_pk=course.get_last_node %}' class='button is-danger'>Usuń ostatnią lekcję</button>
+                {% endif %}
             </div>
-            {% endfor %}
-            <input class='button' type="submit" value="Zapisz zmiany">
-        </form>
+        </div>
     </div>
     <div class='column'>
         <div class='box'>
-            <div class='block'>
-                <span class='title is-2 has-text-centered'>Lista lekcji</span>
-                <a href='{% url "courses:node_add" course_slug=course.slug %}' class='button is-pulled-right'>Dodaj lekcję</a>
-                <a href='{% url "courses:node_delete" node_pk=course.get_last_node.pk %}' class='button is-pulled-right'>Usuń ostatnią lekcję</a>
-                <!-- <a href='#' class='button block'><strong>Zmień kolejność lekcji</strong></a> -->
+            <div class='hero block is-small is-info'>
+                <div class='hero-body'>
+                    <p class="title is-4">
+                        Lista lekcji
+                    </p>
+                </div>
             </div>
-            {% if lessons %}
-            {% for lesson in lessons %}
-                {% include 'courses/__lesson.html' %}
-            {% endfor %}
-            {% else %}
-                <h1 class='title is 2 has-text-centered'>Brak lekcji</h1>
-            {% endif %}
+            <!-- <p class='title is-2 has-text-centered'>Lista lekcji</p> -->
+            <div id='lesson-list'>
+                {% include 'courses/__lesson_list.html' %}
+            </div>
         </div>
     </div>
 </div>

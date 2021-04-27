@@ -1,0 +1,20 @@
+{% load bulma_tags %}
+
+<form method="POST" hx-target="this" hx-swap='outerHTML' hx-post="{% url 'courses:question_update' q.pk %}" class='box'>
+    <input class='button is-success block' type='submit' value="Zapisz zmiany">
+    {{ q_form|bulma }}
+    {{ a_form.management_form }}
+    {% for form in a_form %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}                
+        <div class='field is-grouped'>
+            <div class='control'>
+                {{ form.correct }}
+            </div>
+            <div class='control is-expanded'>
+                {{ form.text }}
+            </div>
+        </div>
+    {% endfor %}
+</form>

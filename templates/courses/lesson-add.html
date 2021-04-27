@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load bulma_tags %}
 
 {% block content %}
 <div class="container">
@@ -7,14 +8,15 @@
             <h1 class='title is-1'>Stwórz nową lekcję</h1>
             <form method="POST">
                 {% csrf_token %}
-                {% for field in form %}
+                {{ form|bulma }}
+                <!-- {% for field in form %}
                 <div class='field'>
                     <label class='label'>{{ field.label_tag }}</label>
                     <div class='control'>
                         {{ field }}
                     </div>
                 </div>
-                {% endfor %}
+                {% endfor %} -->
                 <input class='button' type="submit" value="Zapisz lekcję">
             </form>
         </div>

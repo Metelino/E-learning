@@ -1,5 +1,5 @@
 from django import forms
-from .models import Course, Node, LessonFile, Question, Answer
+from .models import Course, Node, LessonFile, Question, Answer, VAK
 
 class CourseForm(forms.ModelForm):
     class Meta():
@@ -48,24 +48,30 @@ class NodeEditForm(forms.ModelForm):
     ]
     class Meta():
         model = Node
-        fields = ['name', 'desc']
+        fields = ['name', 'desc', 'content']
         labels = {
             'name' : 'Tytuł lekcji',
             'desc' : 'Opis lekcji',
+            'content' : 'Treść lekcji'
         }
         widgets = {
-            'name' : forms.TextInput(attrs = {'class' : 'input'}),
-            'desc': forms.Textarea(attrs={'rows': 10, 'class':'textarea', 'style':'resize:none;'}),
+            # 'desc': forms.Textarea(attrs={'rows': 10}),
+            'content': forms.Textarea(attrs={'rows': 20, 'id':'editor'}),
         }
+        # widgets = {
+        #     'name' : forms.TextInput(attrs = {'class' : 'input'}),
+        #     'desc': forms.Textarea(attrs={'rows': 10, 'class':'textarea', 'style':'resize:none;'}),
+        # }
 
 class FileForm(forms.ModelForm):
     class Meta():
         model = LessonFile
         fields = ['lesson_type', 'lesson_file']
-        # widgets = {
-        #     # 'lesson_type' : forms.HiddenInput(),
-        #     #'lesson_file' : forms.FileInput(attrs = {'class':"file-input"})
-        # }
+        widgets = {
+            # 'lesson_type' : forms.HiddenInput(),
+            #'lesson_file' : forms.FileInput(attrs = {'class':"file-input"})
+            'lesson_file' : forms.FileInput(attrs={'class':'file-input'})
+        }
         labels = {
             'lesson_file' : 'Plik',
             'lesson_type' : 'Typ uczenia się',
@@ -87,7 +93,8 @@ class AnswerCreateForm(forms.ModelForm):
         model = Answer
         fields = ['text', 'correct']
         widgets = {
-            'text' : forms.TextInput(attrs = {'class':'input', 'style':'display:inline-block;'}),
+            'text' : forms.TextInput(attrs = {'class':'input', 'placeholder':"Odpowiedź"}),
+            'correct': forms.CheckboxInput(attrs = {'class':'checkbox is-large'})
         }
         labels = {
             'text' : '',
@@ -95,26 +102,28 @@ class AnswerCreateForm(forms.ModelForm):
         }
 
 AnswerCreateFormSet = forms.modelformset_factory(Answer, extra=2, form=AnswerCreateForm)
+AnswerEditFormSet = forms.modelformset_factory(Answer, extra=0, form=AnswerCreateForm)
 #AnswerCreateFormSet = forms.modelformset_factory(Answer, extra=2, fields=['text','correct'])
 
-class QuestionEditForm(forms.ModelForm):
+class AnswerEditForm(forms.ModelForm):
     model = Question
 
 class QuestionForm(forms.ModelForm):
     class Meta():
         model = Question
         fields = ['answers']
-        widgets = {'answers': forms.CheckboxSelectMultiple}
+        widgets = {'answers': forms.CheckboxSelectMultiple()}
 
     def __init__(self, *args, **kwargs):
+        
         super().__init__(*args, **kwargs)
         self.fields['answers'].label = self.instance.text
-        self.fields['answers'].queryset = self.instance.answers.all()
-        self.fields['answers'].initial = Answer.objects.none()
+        self.fields['answers'].initial = Question.objects.none()
+        self.fields['answers'].queryset = self.instance.answers
         
-        #print(self.instance.id)
+        print(self.fields['answers'].initial)
+        #self.fields['answers'].initial = self.instance.answers.first()
         
-
     def check_answers(self):
         correct = self.instance.answers.filter(correct=True)
         print(correct)

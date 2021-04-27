@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from .forms import UserCreateForm, LearningTypeForm
 from django.views.generic import CreateView
 #from .models import UserInCourse
-from courses.models import Course
+from courses.models import Course, LessonFile
 
 class SignUp(CreateView):
     form_class = UserCreateForm
@@ -13,7 +13,11 @@ class SignUp(CreateView):
     template_name='accounts/signup.html'
 
 def user_profile(request):
-    courses = request.user.profile.courses.all()
+    courses = None
+    if request.user.is_staff:
+        courses = request.user.author_courses.all()
+    else:
+        courses = request.user.profile.courses.all()
     return render(request, 'accounts/profile.html', {'courses':courses})
 
 def course_singup(request, course_slug):
@@ -29,5 +33,15 @@ def change_learning(request):
     if request.method == 'POST':   
         form = LearningTypeForm(request.POST, instance=request.user.profile)
         if form.is_valid():
+            print(form)
             form.save()
-    return redirect(request.META.get('HTTP_REFERER'))
+            print(request.user.profile.learning_type)
+            http = HttpResponse()
+            http['OK'] = True
+            return http
+        else:
+            http = HttpResponse()
+            http['OK'] = False
+            return http
+
+

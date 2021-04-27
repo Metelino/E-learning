@@ -11,33 +11,7 @@
       </p>
     </div>
 </section>
-<div class='box'>
-{% if lessons %}
-{% for lesson in lessons %}
-    {% include 'courses/__lesson.html' %}
-    <!-- <article class="media box">
-        <div class="media-content">
-            <div class="content">
-                <p>
-                <strong>{{ lesson.name }}</strong> - <i>{{ lesson.node_type }}</i>
-                <br>
-                {{ lesson.desc }}
-                </p>
-            </div>
-            {% if user.is_authenticated %}
-            <nav class="level is-mobile">
-                <div class="level-left">
-                <a href='{% url "courses:node_view" lesson.pk %}' class="level-item">
-                    <span class="icon is-medium"><i class="fas fa-arrow-right"></i></span>
-                </a>
-                </div>
-            </nav>
-            {% endif %}
-        </div>
-    </article> -->
-{% endfor %}
-{% else %}
-    <h1 class='title is 2'>Brak lekcji</h1>
-{% endif %}
+<div class='box' id='lesson-list'>
+    {% include 'courses/__lessons.html' %}
 </div>
 {% endblock %}

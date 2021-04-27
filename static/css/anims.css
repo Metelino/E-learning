@@ -1,0 +1,52 @@
+
+  .fade-me-in.htmx-settling{
+    opacity: 0;
+  }
+  .fade-me-in {
+    opacity: 1;
+    transition: opacity 1s ease-out;
+  }
+  .fade-me-out.htmx-swapping {
+    opacity: 0;
+    transition: opacity 1s ease-out;
+  }
+
+.scale-y-0{   
+    transform-origin: top;
+    transition: transform 0.26s ease;
+    transform: scaleY(0); 
+}
+
+.scale-y-1{   
+    transform-origin: top;
+    transition: transform 0.26s ease;
+    transform: scaleY(1); 
+}
+
+.y-0{
+    transform: scaleY(0); 
+}
+
+.y-1{
+    transform: scaleY(1);
+}
+
+/* .scale-y-0{   
+    transition: max-height 0.25s ease-out;
+    max-height : 0;
+    overflow: hidden;
+}
+
+.scale-y-1{   
+    transition: max-height 0.25s ease-out;
+    max-height : initial; 
+}
+
+.y-0{
+    overflow: hidden;
+    max-height : 0;
+}
+
+.y-1{
+    max-height : initial;
+} */

@@ -1,0 +1,28 @@
+html, body{
+    min-height : 100vh;
+}
+body{
+    color : black;
+    box-sizing: border-box;
+    margin : 0px;
+    display : flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    align-content: center;
+    background : hsl(0, 0%, 96%);
+}
+.main-column{
+    display : flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    background : hsl(0, 0%, 96%);
+    /* position : absolute;
+    bottom:0;
+    top:0;
+    left:0;
+    right:0;
+    height : auto;
+    margin : 5px; */
+}

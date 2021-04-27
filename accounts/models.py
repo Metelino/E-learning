@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib import auth
-from courses.models import Course, Node
+from courses.models import Course, Node, VAK
 from annoying.fields import AutoOneToOneField
 
 # Create your models here.
@@ -13,12 +13,12 @@ class User(auth.models.User, auth.models.PermissionsMixin):
 class Profile(models.Model):
     LEARNING_TYPE = [
         ('0', 'Wzrokowiec'),
-        ('1', 'Dzidowiec'),
+        ('1', 'Kinestetyk'),
         ('2', 'Słuchowiec'),
     ]
     user = AutoOneToOneField(auth.models.User, on_delete=models.CASCADE, primary_key=True, related_name='profile')
     courses = models.ManyToManyField(Course)
-    learning_type = models.CharField(choices=LEARNING_TYPE, default='0', max_length=30)
+    learning_type = models.CharField(choices=VAK.choices, default='0', max_length=30)
     nodes_passed = models.ManyToManyField(Node)
 
     def is_in_course(self, course):

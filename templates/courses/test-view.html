@@ -1,7 +1,8 @@
 {% extends "base.html" %}
+{% load bulma_tags %}
 
 {% block content %}
-<section class="hero is-info is-small block">
+<!-- <section class="hero is-info is-small block">
     <div class="hero-body">
         <p class="title">
             Test : {{ lesson.name }}
@@ -10,6 +11,34 @@
             Odpowiedz na pytania
         </p>
     </div>
+</section> -->
+<section class="hero is-info is-small block">
+    <div class="hero-body is-flex">
+        <div class='container has-text-centered'>
+            <p class="title">
+                Test : {{ lesson.name }}
+            </p>
+            <p class="subtitle">
+                Odpowiedz na pytania
+            </p>
+        </div>
+        {% if user.is_staff %}
+        <nav class="navbar">
+            <div class="container">
+                <div id="navbarMenuHeroA" class="navbar-menu">
+                    <div class="navbar-end">
+                    <a class="navbar-item is-active">
+                        Widok Studenta
+                    </a>
+                    <a class="navbar-item" href="{% url 'courses:node_edit' lesson.pk %}">
+                        Widok Nauczyciela
+                    </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        {% endif %}
+    </div>
 </section>
 <div class='container'>
     <form id='test' class='box' method='POST'>
@@ -17,7 +46,7 @@
         {{ q_forms.management_form }}
         {% for form in q_forms %}
             <div class='box'>
-            {{form}}
+            {{form|bulma}}
             </div>
             <!-- {% for field in form %}
             <div class='field'>

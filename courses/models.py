@@ -1,10 +1,19 @@
 from django.db import models
+from django.core.validators import validate_comma_separated_integer_list
 from django.contrib import auth
 from django.utils.text import slugify
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+from multiselectfield import MultiSelectField
 from pathlib import Path
 
+
 User = auth.get_user_model()
+
+class VAK(models.TextChoices):
+    WZROKOWIEC = '0', _('Wzrokowiec')
+    KINESTETYK = '1', _('Kinestetyk')
+    SLUCHOWIEC = '2', _('Słuchowiec')
 
 def get_upload_path(instance, filename):
     return f'node_{instance.node.id}_files/{filename}'
@@ -12,11 +21,11 @@ def get_upload_path(instance, filename):
 class LessonFile(models.Model):
     LESSON_TYPE = [
         ('0', 'Wzrokowiec'),
-        ('1', 'Dzidowiec'),
+        ('1', 'Kinestetyk'),
         ('2', 'Słuchowiec'),
     ]
-
-    lesson_type = models.CharField(max_length=20, choices=LESSON_TYPE, default='0')
+    lesson_type = MultiSelectField(max_length=5, choices=VAK.choices, default='0')
+    # lesson_type = models.CharField(max_length=20, choices=VAK.choices, default='0')
     lesson_file = models.FileField(upload_to=get_upload_path)
     node = models.ForeignKey(to='Node', on_delete=models.CASCADE)
 
@@ -24,17 +33,10 @@ class LessonFile(models.Model):
         p = Path(self.lesson_file.path)
         return p.stem
 
-    # def save(self, *args, **kwargs):
-    #     self.lesson_file.upload_to = str(self.node.id) + '_files/'
-    #     super().save(*args, **kwargs)
-
     @classmethod
-    def get_files(self, node):
-        grouped_files = dict()
-        files = self.objects.filter(node = node)
-        for t in LessonFile.LESSON_TYPE:
-            grouped_files[t[0]] = files.filter(lesson_type=t[0])
-        return grouped_files
+    def get_files(self, node, lesson_type):
+        files = self.objects.filter(node = node, lesson_type__contains=lesson_type)
+        return files
 
     def get_absolute_url(self):
         return reverse('courses:stream_file', kwargs={'file_pk':self.pk})
@@ -49,14 +51,15 @@ class Answer(models.Model):
 class Question(models.Model):
     text = models.CharField(null=True, max_length=200)
     answers = models.ManyToManyField(Answer)
-    #answer = models.ForeignKey(to=Answer, on_delete=models.CASCADE, related_name='right_answer', null=True)
     node = models.ForeignKey(to='Node', on_delete=models.CASCADE)
     
     def __str__(self):
-        return str(self.question_content)
+        return str(self.text)
 
-    def check_answers(self, answers):
-        return set(self.answers.filter(correct=True)) == set(answers)
+    def delete(self, *args, **kwargs):
+        for a in self.answers.all():
+            a.delete()
+        super().delete(*args, **kwargs)
 
 class Node(models.Model):
     NODE_TYPE = [
@@ -64,7 +67,8 @@ class Node(models.Model):
         ('test', 'Test')
     ]
     name = models.CharField(max_length=100)
-    desc = models.CharField(max_length=1000)
+    desc = models.CharField(max_length=200)
+    content = models.CharField(max_length=2000, default='')
     slug = models.SlugField(allow_unicode=True, blank=True, null=True)
     node_type = models.CharField(choices=NODE_TYPE, default='lesson', max_length=20)
     course = models.ForeignKey(to='Course', on_delete=models.CASCADE)
@@ -96,7 +100,7 @@ class Node(models.Model):
 
 class Course(models.Model):
     name = models.CharField(max_length=100)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='autor')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_courses')
     desc = models.CharField(max_length=1000)
     slug = models.SlugField(allow_unicode=True, blank=True, unique=True, null=True)
     node_count = models.PositiveIntegerField(default=0)
@@ -105,8 +109,11 @@ class Course(models.Model):
         return str(self.name)
 
     def get_last_node(self):
-        return self.node_set.get(node_number=self.node_count-1)
-
+        try:
+            return self.node_set.get(node_number=self.node_count-1).pk
+        except:
+            return None
+        
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)

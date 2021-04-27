@@ -1,0 +1,27 @@
+<div class="card block {{class}}" hx-target='this' _='{{script}}'>
+    <div class="card-content">
+        <div class='media'>
+            <div class="media-left">
+                {% if '0' in file.lesson_type  %}
+                <span class="icon is-medium"><i class="fas fa-eye"></i></span>
+                {% endif %}
+                {% if '1' in file.lesson_type  %}
+                <span class="icon is-medium"><i class="far fa-hand-spock"></i></span>
+                {% endif %}
+                {% if '2' in file.lesson_type  %}
+                <span class="icon is-medium"><i class="fas fa-assistive-listening-systems"></i></span>
+                {% endif %} 
+            </div>
+            <div class="media-content">
+                <i>{{ file.get_name }}</i>
+            </div>
+        </div>
+    </div>
+    {% if user.is_authenticated %}
+    <footer class="card-footer">
+        <!-- <a href='#' class="card-footer-item"><i class="fas fa-edit"></i></a> -->
+        <button hx-swap='outerHTML' hx-confirm="Czy napewno chcesz usunąć plik?" hx-delete="{% url 'courses:file_delete' file.pk %}" class="card-footer-item"><i class="fas fa-minus-square"></i></button>
+        <!-- <a href="{% url 'courses:file_delete' file.pk %}" onclick="delete_file(event)" class="card-footer-item"><i class="fas fa-minus-square"></i></a> -->
+    </footer>
+    {% endif %}
+</div>

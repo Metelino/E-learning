@@ -2,14 +2,23 @@
 
 {% block content %}
 <div class='columns'>
+    {% if user.is_staff %}
+    <div class='column is-narrow' style='position: sticky;'>
+        <div class='box'>
+            <a class='button is-large' href="{% url 'courses:course_add' %}">Dodaj kurs</a>
+        </div>
+    </div>
+    {% else %}
     <div class='column is-narrow'>
         <form method="POST" class='box'>
             {% csrf_token %}
             <input type="submit" value="Zmień rodzaj uczenia" class="button">
         </form>
     </div>
+    {% endif %}
     <div class='column'>
-        <div class='box'>
+        {% include 'courses/__courses.html' %}
+        <!-- <div class='box'>
         {% if courses %}
         {% for kurs in courses %}
             <div class='card block'>
@@ -32,7 +41,7 @@
         {% else %}
             <h3 class='title is-2'>Brak kursów</h3>
         {% endif %}
-        </div>
+        </div> -->
     </div>
 </div>
 {% endblock %}

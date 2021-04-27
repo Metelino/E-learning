@@ -2,6 +2,13 @@
 {% load static %}
 
 {% block content %}
+<!-- <section class="section">
+    <h1 class="title">Lista kursów</h1>
+    <h2 class="subtitle">
+        Przejrzyj dostępne kursy
+    </h2>
+  </section> -->
+
 <section class="hero is-info is-small block">
     <div class="hero-body">
       <p class="title is-4">
@@ -14,51 +21,9 @@
 </section>
 
 <div class='columns'>
-    {% if user.is_staff %}
-    <div class='column is-narrow' style='position: sticky;'>
-        <div class='box'>
-            <a class='button is-large' href="{% url 'courses:course_add' %}">Dodaj kurs</a>
-        </div>
-    </div>
-    {% endif %}
     <div class='column'>
-        <div class='box'>
-            {% if object_list %}
-            {% for kurs in object_list %}
-                <div class='card block'>
-                    <div class='card-header'>
-                        <p class="card-header-title">
-                            {{ kurs.name }}
-                        </p>
-                    </div>
-                    <div class="card-content">
-                        <p class="title is-5">{{ kurs.desc }}</p>
-                        <p class="subtitle">{{ kurs.author }}</p>
-                    </div>
-                    <footer class="card-footer">
-                        {% if user.is_staff %}
-                        <a class="card-footer-item" href="{% url 'courses:course_edit' course_slug=kurs.slug %}">
-                            Edytuj kurs
-                        </a>
-                        <a class="card-footer-item" href="{% url 'courses:course_delete' course_slug=kurs.slug %}">
-                            Usuń kurs
-                        </a>
-                        {% else %}
-                        <a class="card-footer-item" href="{% url 'courses:course_view' course_slug=kurs.slug %}">
-                            Zobacz kurs
-                        </a>
-                        {% if kurs not in user.profile.courses.all %}
-                        <a href='#' class="card-footer-item" onclick='course_signup(event)' data-url="{% url 'accounts:course_signup' course_slug=kurs.slug %}">
-                            Zapisz się na kurs
-                        </a>
-                        {% endif %}
-                        {% endif %}   
-                    </footer>
-                </div>
-            {% endfor %} 
-            {% else %}
-                <h3 class='title is-2'>Brak kursów</h3>
-            {% endif %}
+        <div class='box' id='course-list'>
+            {% include 'courses/__courses.html' %}
         </div>
     </div>
 </div>
