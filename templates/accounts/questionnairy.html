@@ -3,11 +3,38 @@
 
 {% block content %}
 <div class='container'>
-    <h1 class='title is-2'>Ankieta</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form | bulma }}
-        <input type="submit" value="Prześlij" class="btn btn-default">
-    </form>
+    <div class='columns'>
+        <div class='column'>
+            <form method="POST">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class='field box'>
+                    <div class='label'>
+                        {{ field.label }}
+                    </div>
+                    <div class='control'>
+                        {{ field }}
+                    </div>
+                </div>
+                {% endfor %}
+                <input id='form-submit' type='submit' style='display : none'>
+            </form>
+            
+        </div>
+        <div class='column is-narrow'>
+            <div style='position:sticky; top:35%;'>
+                <h1 class='title is-2'>Ankieta</h1>
+                <p class='subtitle'>Wypełnij ankietę i zmień styl uczenia się</p>
+                <button id='submit-button' class="button is-primary is-fullwidth">Prześlij</button>
+                <script>
+                    const form_button = document.getElementById('submit-button');
+                    const style_form = document.getElementById('form-submit');
+                    form_button.onclick = function(){
+                        style_form.click();
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
