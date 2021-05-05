@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 #from django.contrib import auth
-from .forms import UserCreateForm, LearningTypeForm
+from .forms import UserCreateForm, LearningTypeForm, QuestionnairyForm
+from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
 #from .models import UserInCourse
 from courses.models import Course, LessonFile
@@ -43,5 +44,19 @@ def change_learning(request):
             http = HttpResponse()
             http['OK'] = False
             return http
+
+@login_required
+def questionnairy_view(request):
+    if request.method == 'POST':
+        form = QuestionnairyForm(request.POST)
+        if form.is_valid():
+            request.user.profile.learning_type = form.count_points()
+            request.user.profile.save()
+            return redirect('accounts:profile')          
+    context = {}
+    context['form'] = QuestionnairyForm()
+    return render(request, 'accounts/questionnairy.html', context)
+    
+
 
 
