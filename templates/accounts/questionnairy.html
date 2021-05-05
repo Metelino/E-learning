@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load bulma_tags %}
+
+{% block content %}
+<div class='container'>
+    <h1 class='title is-2'>Ankieta</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form | bulma }}
+        <input type="submit" value="Prześlij" class="btn btn-default">
+    </form>
+</div>
+{% endblock %}

@@ -10,10 +10,11 @@
     </div>
     {% else %}
     <div class='column is-narrow'>
-        <form method="POST" class='box'>
-            {% csrf_token %}
-            <input type="submit" value="Zmień rodzaj uczenia" class="button">
-        </form>
+        <div class="box">
+            <h1>Styl uczenia się:</h1>
+            <h1 class="is-size-4"><strong>{{user.profile.get_learning_type_display}}</strong></h1>
+        </div>
+        <a class="button" href="{% url 'accounts:questionnairy' %}">Zmień rodzaj uczenia</a>
     </div>
     {% endif %}
     <div class='column'>
