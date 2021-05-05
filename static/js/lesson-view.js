@@ -5,8 +5,11 @@ const tabs = document.querySelectorAll('#tabs-container>div');
 //console.log(tabs);
 //console.log(tabs_nav);
 
+// function set_file(event){
+//     player.data = event.target.dataset.fileUrl;
+// }
 function set_file(event){
-    player.data = event.target.dataset.fileUrl;
+    player.src = event.target.dataset.fileUrl;
 }
 
 async function pass_lesson(e){

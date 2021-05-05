@@ -1,5 +1,6 @@
 from django import forms
 from .models import Course, Node, LessonFile, Question, Answer, VAK
+#from ckeditor.widgets import CKEditorWidget
 
 class CourseForm(forms.ModelForm):
     class Meta():
@@ -57,6 +58,7 @@ class NodeEditForm(forms.ModelForm):
         widgets = {
             # 'desc': forms.Textarea(attrs={'rows': 10}),
             'content': forms.Textarea(attrs={'rows': 20, 'id':'editor'}),
+            #'content': CKEditorWidget(),
         }
         # widgets = {
         #     'name' : forms.TextInput(attrs = {'class' : 'input'}),

@@ -17,9 +17,20 @@ const notes = document.getElementById('notes');
 //         console.log("Coś się zepsuło...")
 // }
 		
-CKEDITOR.replace('editor', {
+var editor = CKEDITOR.replace('editor', {
     skin : 'moono-lisa'
 });
+
+editor.on('change', function(e){
+    //console.log('ZMiana');
+    editor.updateElement();
+})
+
+// const editor = document.getElementById('editor');
+// editor.onchange = function(){
+//     editor.updateElement();
+// }
+
 
 
 					

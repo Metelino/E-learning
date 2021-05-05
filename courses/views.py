@@ -116,12 +116,14 @@ def file_add(request, node_pk):
         lesson_file.node = node; lesson_file.save()
     else:
         print(form.errors)
+        return render(request, 'courses/__message.html', {'title':'Błąd przy dodawaniu pliku', 'type':'is-danger'})
     #files = node.lessonfile_set.all()
     http = render(request, 'courses/__edit_file.html', {'file':lesson_file, 'class':'scale-y-0', 'script':'on load toggle .y-1 on me'})
     http.write(render_to_string('courses/__message.html', {'title':'Plik dodano pomyślnie', 'type':'is-success'}))
     return http
     #return redirect(request.META.get('HTTP_REFERER'))
 
+@require_http_methods(['DELETE'])
 @user_passes_test(lambda u: u.is_staff)
 def file_delete(request, file_pk):
     try:
@@ -244,7 +246,7 @@ def question_add(request, test_pk):
             http =  render(request, 'courses/__question.html', {'q':q, 'class':'scale-y-0', 'script':'on load toggle .y-1 on me'})
             http.write(render_to_string('courses/__message.html', {'title':'Pytanie dodano pomyślnie', 'type':'is-success'}))
             return http
-    return render(request, 'courses/__message.html', {'title':'Nie udało się usunąć pytania!', 'type':'is-danger'})
+    return render(request, 'courses/__message.html', {'title':'Nie udało się dodać pytania!', 'type':'is-danger'})
     
 
 def question_update(request, question_pk):
