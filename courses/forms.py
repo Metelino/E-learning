@@ -5,15 +5,41 @@ from .models import Course, Node, LessonFile, Question, Answer, VAK
 class CourseForm(forms.ModelForm):
     class Meta():
         model = Course
-        fields = ['name', 'desc']
+        fields = ['name', 'desc', 'category']
         labels = {
             'name' : 'Tytuł kursu',
-            'desc' : 'Opis kursu'
+            'desc' : 'Opis kursu',
+            'category' : 'Kategoria'
         }
         widgets = {
             'name' : forms.TextInput(attrs = {'class' : 'input'}),
             'desc': forms.Textarea(attrs={'rows': 10, 'class':'textarea', 'style':'resize:none;'}),
         }
+
+class CourseSearchForm(forms.Form):
+    CATEGORIES = [
+        ('wszystkie', 'wszystkie'),
+        ('other', 'inna'),
+        ('infa', 'informatyka'),
+        ('matma', 'matematyka'),
+        ('fizyka', 'fizyka'),
+        ('biologia', 'biologia'),
+        ('chemia', 'chemia')
+    ]
+    name = forms.CharField(max_length=200, required=False, label='Nazwa kursu')
+    category = forms.ChoiceField(choices=CATEGORIES, initial='wszystkie', label='Kategoria')
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     # there's a `fields` property now
+    #     self.fields['name'].required = False
+
+    # class Meta():
+    #     model = Course
+    #     fields = ['name','category']
+    #     labels = {
+    #         'name' : 'Nazwa kursu',
+    #         'category' : 'Kategoria'
+    #     }
 
 class CourseEditForm(forms.ModelForm):
     class Meta():

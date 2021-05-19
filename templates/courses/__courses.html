@@ -2,7 +2,7 @@
 {% for kurs in courses %}
     <div class='card block' hx-target='this'>
         <div class='card-header'>
-            <p class="card-header-title">
+            <p class="card-header-title title is-4">
                 {{ kurs.name }}
             </p>
         </div>
@@ -23,14 +23,17 @@
                 Zobacz kurs
             </a>
             {% if kurs not in user.profile.courses.all %}
-            <a href='#' class="card-footer-item" onclick='course_signup(event)' data-url="{% url 'accounts:course_signup' course_slug=kurs.slug %}">
+            <a href='#' class="card-footer-item" hx-target='this' hx-swap='outerHTML' hx-get="{% url 'accounts:course_signup' course_slug=kurs.slug %}">
                 Zapisz się na kurs
             </a>
+            <!-- <a href='#' class="card-footer-item" onclick='course_signup(event)' data-url="{% url 'accounts:course_signup' course_slug=kurs.slug %}">
+                Zapisz się na kurs
+            </a> -->
             {% endif %}
             {% endif %}   
         </footer>
     </div>
 {% endfor %} 
 {% else %}
-    <h3 class='title is-2'>Brak kursów</h3>
+    <h3 class='box title is-2 has-text-centered'>Brak kursów</h3>
 {% endif %}

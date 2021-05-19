@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container">
-    <h1 class='title is-2'>Zarejestruj się</h1>
+    <h1 class='title is-2'>Rejestracja</h1>
     <form method="POST">
         {% csrf_token %}
         {{ form|bulma }}
@@ -11,7 +11,7 @@
             <p>{{ field.label_tag }}</p>
             <p>{{ field }}</p>
         {% endfor %} -->
-        <input type="submit" value="Sign Up" class="button">
+        <input type="submit" value="Zarejestruj się" class="button is-success is-fullwidth">
     </form>
 </div>
 {% endblock %}

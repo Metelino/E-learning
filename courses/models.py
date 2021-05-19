@@ -99,8 +99,17 @@ class Node(models.Model):
 
 
 class Course(models.Model):
+    CATEGORIES = [
+        ('other', 'inna'),
+        ('infa', 'informatyka'),
+        ('matma', 'matematyka'),
+        ('fizyka', 'fizyka'),
+        ('biologia', 'biologia'),
+        ('chemia', 'chemia')
+    ]
     name = models.CharField(max_length=100)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author_courses')
+    category = models.CharField(choices=CATEGORIES, default='other', max_length=100)
     desc = models.CharField(max_length=1000)
     slug = models.SlugField(allow_unicode=True, blank=True, unique=True, null=True)
     node_count = models.PositiveIntegerField(default=0)

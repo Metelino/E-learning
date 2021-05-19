@@ -3,16 +3,23 @@
 
 {% block content %}
 <div class='container'>
-    <h1 class='title is-2'>Zaloguj się</h1>
+    <h1 class='title is-2'>Logowanie</h1>
     <form method="POST">
         {% csrf_token %}
         {{ form | bulma }}
-        <!-- {% for field in form %}
-            <p>{{ field.label_tag }}</p>
-            <p>{{ field }}</p>
-            <p>{{ field.help_text }}</p>
-        {% endfor %} -->
-        <input type="submit" value="Login" class="btn btn-default">
+        <!-- <div class='field'>
+            <div class='label'>Nazwa użytkownika</div>
+            <div class='control'>
+                {{ form.username }}
+            </div>
+        </div>
+        <div class='field'>
+            <div class='label'>Hasło</div>
+            <div class='control'>
+                {{ form.password }}
+            </div>
+        </div> -->
+        <input type="submit" value="Zaloguj się" class="button is-success">
     </form>
 </div>
 {% endblock %}

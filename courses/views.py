@@ -9,15 +9,28 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.http import require_http_methods
 from .models import Course, Node, LessonFile, Question, Answer
 from accounts.forms import LearningTypeForm
-from .forms import (CourseForm, CourseEditForm, NodeForm, NodeEditForm,
+from .forms import (CourseForm, CourseSearchForm, CourseEditForm, NodeForm, NodeEditForm,
  FileForm, FileFormSet, QCreateForm, AnswerCreateFormSet, AnswerEditFormSet, QFormSet, QuestionForm)
 
 # class ListCourses(ListView):
 #     model = Course
 #     template_name = 'courses/course-list.html'
 def course_list(request):
+    if request.method == 'POST':
+        form = CourseSearchForm(request.POST)
+        if form.is_valid():
+            form = form.cleaned_data
+            #print(form)
+            courses = None
+            if form['category'] == 'wszystkie':
+                courses = Course.objects.filter(name__contains=form['name'])
+            else:
+                courses = Course.objects.filter(category=form['category'], name__contains=form['name'])
+            return render(request, 'courses/__courses.html', {'courses':courses})
+    
     courses = Course.objects.all()
-    return render(request, 'courses/course-list.html', {'courses':courses})
+    form = CourseSearchForm()
+    return render(request, 'courses/course-list.html', {'courses':courses, 'form':form})
 
 @require_http_methods(['DELETE'])
 @user_passes_test(lambda u: u.is_staff)
@@ -46,12 +59,13 @@ def course_add(request):
 def course_edit(request, course_slug):
     course = Course.objects.get(slug=course_slug)
     if request.method == 'POST':
-        form = CourseEditForm(request.POST)
+        form = CourseForm(request.POST, instance=course)
         if form.is_valid():
-            form = form.cleaned_data
-            course.name = form['name']
-            course.desc = form['desc']
-            course.save()
+            form.save()
+            #form = form.cleaned_data
+            #course.name = form['name']
+            #course.desc = form['desc']
+            #course.save()
             return render(request, 'courses/__message.html', {'type':'is-success', 'title':'Pomyślnie zmieniono opis!'})
         return render(request, 'courses/__message.html', {'type':'is-danger', 'title':'Nie udało się zmienić opisu!'})
     else:

@@ -7,11 +7,18 @@ class UserCreateForm(auth.forms.UserCreationForm):
     class Meta:
         fields = ("username", "email", "password1", "password2")
         model = auth.get_user_model()
+        # help_texts = {
+        #     'username' : 'Wymagane 150 znaków lub mniej 150. Tylko litery, cyfry oraz @/./+/-/_.',
+        #     'password1' : '<ul><li>Hasło musi zawierać conajmniej 8 znaków.</li><li>Hasło nie może składać się wyłącznie z cyfr.</li></ul>',
+        #     'password2' : None
+        # }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["username"].label = "Display name"
-        self.fields["email"].label = "Email address"
+        self.fields["username"].label = "Nazwa użytkownika"
+        self.fields["email"].label = "Adres email"
+        self.fields["password1"].label = "Hasło"
+        self.fields["password2"].label = "Potwierdź hasło"
 
 
 class LearningTypeForm(forms.ModelForm):
