@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero is-info is-small block">
+    <div class="hero-body">
+      <p class="title">
+        Lista lekcji
+      </p>
+      <p class="subtitle">
+        Przejrzyj lekcje zawarte w kursie
+      </p>
+    </div>
+</section>
+<div class='box' id='lesson-list'>
+    {% include 'courses/__lesson_list.html' %}
+</div>
+{% endblock %}

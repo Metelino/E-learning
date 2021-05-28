@@ -6,6 +6,15 @@
 {% block content %}
 <section class="hero is-info is-small block">
     <div class="hero-body is-flex">
+        <nav class='navbar'>
+            <div class="navbar-menu">
+                <div hx-boost='true' class="navbar-start">
+                    <a class="navbar-item" href="{% url 'courses:course_edit' lesson.course.slug %}">
+                        <strong>Kurs</strong>
+                    </a>
+                </div>
+            </div>
+        </nav>
         <div class='container has-text-centered'>
             <p class="title is-4">
                 Lekcja : {{ lesson.name }}
@@ -31,9 +40,9 @@
         </nav>
         {% endif %}
     </div>
-    <div class="hero-foot">
-        <div class='container'>
-            <nav id='tabs-nav' class='tabs is-boxed is-fullwidth is-small'>
+    <!-- <div class="hero-foot">
+        <nav id='tabs-nav' class='tabs is-boxed is-fullwidth is-small'>
+            <div class='container'>
                 <ul>
                     <li class="is-active" onclick="openTab(event,'content-tab')">
                         <a>Treść</a>
@@ -42,50 +51,64 @@
                         <a>Pliki</a>
                     </li>
                 </ul>
-            </nav>
-        </div>
-    </div>
+            </div>
+        </nav>
+    </div> -->
 </section>
 
-<div id='tabs-container' style='flex-grow:1; display:flex; flex-direction: column;'>
-    <div id='files-tab' class='columns' style='flex-grow:1; display:none;'>
-        <div class='column'>
-            <iframe class='box' id='media-player' style='width:100%; height:100%;'>
-            </iframe>
-        </div>
-        <div class='column is-2'>
-            {% if not user.is_staff %}
-            <div class='box'>
-                {% if lesson in user.profile.nodes_passed.all %}
-                <input data-url="{% url 'courses:lesson_passed' lesson.pk %}" type='checkbox' disabled checked>
-                {% else %}
-                <input data-url="{% url 'courses:lesson_passed' lesson.pk %}" onclick="pass_lesson(event)" type='checkbox'>
-                {% endif %}
-                <span><strong>Zalicz lekcję</strong></span> 
-            </div>
-            {% else %}
-            <div class='box'>
-                <form id='learning-form' method='POST' data-file-url="{% url 'courses:lesson_files' lesson.pk %}" action="{% url 'accounts:change_learning' %}">
-                    {% csrf_token %}
-                    {{ l_form|bulma }}
-                    <!-- <div class=field>
-                        <div class='label'>
-                            {{l_form.learning_type.label_tag}}
-                        </div>
-                        <div class='control'>
-                            {{l_form.learning_type}}
-                        </div>
-                    </div> -->
-                </form>
-            </div>
-            {% endif %}
-            <div id='file-list'>
-                {% include 'courses/__files.html' %}
-            </div>
+<div class='columns is-flex-grow-1 is-variable is-2 mb-0 pb-0'>
+    <div id='tabs-nav' class='column is-narrow'>
+        <div style='position:sticky; top:2%;'>
+            <button style='display : block; height:25vh' class="button pl-2 pr-2 block is-active" onclick="openTab(event,'content-tab')">
+                <i class="fas fa-align-left"></i>
+            </button>
+            <button style='display : block; height:25vh' class="button pl-2 pr-2 block" onclick="openTab(event,'files-tab')">
+                <i class="far fa-file-image"></i>
+            </button>
         </div>
     </div>
-    <div id='content-tab' class='content box' style='flex-direction: column;'>
-        {{ lesson.content|safe }}
+    <div id='tabs-container' class='column pb-0 mb-0'>
+        <div id='files-tab' style='height:100%; display:none;'>
+            <div class='columns mb-0 pb-0' style='height:100%'>
+                <div class='column pb-0 mb-0'>
+                    <iframe class='box' id='media-player' style='width:100%; height:100%;'>
+                    </iframe>
+                </div>
+                <div class='column is-2'>
+                    {% if not user.is_staff %}
+                    <div class='box'>
+                        {% if lesson in user.profile.nodes_passed.all %}
+                        <input data-url="{% url 'courses:lesson_passed' lesson.pk %}" type='checkbox' disabled checked>
+                        {% else %}
+                        <input data-url="{% url 'courses:lesson_passed' lesson.pk %}" onclick="pass_lesson(event)" type='checkbox'>
+                        {% endif %}
+                        <span><strong>Zalicz lekcję</strong></span> 
+                    </div>
+                    {% else %}
+                    <div class='box'>
+                        <form id='learning-form' method='POST' data-file-url="{% url 'courses:lesson_files' lesson.pk %}" action="{% url 'accounts:change_learning' %}">
+                            {% csrf_token %}
+                            {{ l_form|bulma }}
+                            <!-- <div class=field>
+                                <div class='label'>
+                                    {{l_form.learning_type.label_tag}}
+                                </div>
+                                <div class='control'>
+                                    {{l_form.learning_type}}
+                                </div>
+                            </div> -->
+                        </form>
+                    </div>
+                    {% endif %}
+                    <div id='file-list'>
+                        {% include 'courses/__files.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>      
+        <div id='content-tab' class='content box' style='flex-direction: column;'>
+            {{ lesson.content|safe }}
+        </div>
     </div>
 </div>
 {% endblock %}

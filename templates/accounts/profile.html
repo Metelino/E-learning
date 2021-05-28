@@ -5,7 +5,7 @@
     {% if user.is_staff %}
     <div class='column is-narrow' style='position: sticky;'>
         <div class='box'>
-            <a class='button is-large' href="{% url 'courses:course_add' %}">Dodaj kurs</a>
+            <a class='button is-large is-link' href="{% url 'courses:course_add' %}">Dodaj kurs</a>
         </div>
     </div>
     {% else %}
@@ -19,30 +19,6 @@
     {% endif %}
     <div class='column'>
         {% include 'courses/__courses.html' %}
-        <!-- <div class='box'>
-        {% if courses %}
-        {% for kurs in courses %}
-            <div class='card block'>
-                <div class='card-header'>
-                    <p class="card-header-title">
-                        {{ kurs.name }}
-                    </p>
-                </div>
-                <div class="card-content">
-                    <p class="title is-5">{{ kurs.desc }}</p>
-                    <p class="subtitle">{{ kurs.author }}</p>
-                </div>
-                <footer class="card-footer">
-                    <a class="card-footer-item" href="{% url 'courses:course_view' course_slug=kurs.slug %}">
-                        Przejdź do kursu
-                    </a>
-                </footer>
-            </div>
-        {% endfor %} 
-        {% else %}
-            <h3 class='title is-2'>Brak kursów</h3>
-        {% endif %}
-        </div> -->
     </div>
 </div>
 {% endblock %}

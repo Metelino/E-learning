@@ -2,7 +2,7 @@ html, body{
     min-height : 100vh;
 }
 body{
-    color : black;
+    /* color : black; */
     box-sizing: border-box;
     margin : 0px;
     display : flex;

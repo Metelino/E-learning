@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
 <section class="hero is-success is-flex-grow-1">
     <div class='hero-body'>
@@ -23,13 +25,13 @@
                     <input type="radio" name="radio-btn" id="radio3">
 
                     <div class="slide first">
-                        <img src="static/pics/1.jpg" alt="zdjęcie1" >
+                        <img src="{% static 'pics/1.jpg' %}" alt="zdjęcie1" >
                     </div>
                     <div class="slide">
-                        <img src="static/pics/2.jpg" alt="zdjęcie2" >
+                        <img src="{% static 'pics/2.jpg' %}" alt="zdjęcie2" >
                     </div>
                     <div class="slide">
-                        <img src="static/pics/3.jpg" alt="zdjęcie3" >
+                        <img src="{% static 'pics/3.jpg' %}" alt="zdjęcie3" >
                     </div>               
 
                     <div class="navigation-auto">

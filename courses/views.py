@@ -1,12 +1,13 @@
 from django.template.loader import render_to_string
 from django.shortcuts import render, redirect, reverse
-from django.http import HttpResponse, FileResponse, FileResponse
+from django.http import HttpResponse, FileResponse, JsonResponse
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.cache import never_cache
 from .models import Course, Node, LessonFile, Question, Answer
 from accounts.forms import LearningTypeForm
 from .forms import (CourseForm, CourseSearchForm, CourseEditForm, NodeForm, NodeEditForm,
@@ -55,10 +56,9 @@ def course_add(request):
         form = CourseForm()
         return render(request, 'courses/course_add.html', {'form' : form})
 
-@user_passes_test(lambda u: u.is_staff)
 def course_edit(request, course_slug):
     course = Course.objects.get(slug=course_slug)
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user == course.author:
         form = CourseForm(request.POST, instance=course)
         if form.is_valid():
             form.save()
@@ -73,32 +73,38 @@ def course_edit(request, course_slug):
         lessons = course.node_set.all()
         return render(request, 'courses/course-edit.html', {'course':course , 'lessons':lessons, 'form':form})
 
-def course_view(request, course_slug):
-    course = Course.objects.get(slug=course_slug)
-    lessons = course.node_set.all()
-    return render(request, 'courses/course-view.html', {'course_slug':course.slug , 'lessons':lessons})
+# def course_view(request, course_slug):
+#     course = Course.objects.get(slug=course_slug)
+#     lessons = course.node_set.all()
+#     return render(request, 'courses/course-view.html', {'course_slug':course.slug , 'lessons':lessons})
     
 @require_http_methods(['DELETE'])
 @user_passes_test(lambda u: u.is_staff)
 def node_delete(request, node_pk):
     try:
         node = Node.objects.get(pk=node_pk)
-        course = node.course
+        http = render(request, 'courses/__lesson.html', {'lesson': node, 'class':'scale-y-0', 'class':'scale-y-1', 'script':'on load toggle .y-0 on me\n on transitionend remove me'})
+        #course = node.course
         if request.user.is_superuser or node.author == request.user:
             node.delete()
-        nodes = course.node_set.all()
-        http = render(request, 'courses/__lesson_list.html', {'lessons':nodes})
+        #nodes = course.node_set.all()
+        #http = render(request, 'courses/__lesson_list.html', {'lessons':nodes})
+        #http.write(render_to_string('courses/__message.html', {'title':'Usunięto lekcję', 'type':'is-success'}))
+        #return http
         http.write(render_to_string('courses/__message.html', {'title':'Usunięto lekcję', 'type':'is-success'}))
         return http
+        #return render(request, 'courses/__message.html', {'title':'Usunięto lekcję', 'type':'is-success'})
     except:
         return render(request, 'courses/__message.html', {'title':'Nie udało się usunąć lekcji! Lekcja już nie istnieje.', 'type':'is-danger'})
 
+@user_passes_test(lambda u: u.is_staff)
 def test_edit(request, node):   
     questions = node.question_set.all()
     question_form = QCreateForm()
     answers_form = AnswerCreateFormSet(queryset=Answer.objects.none())
     return render(request, 'courses/test-edit.html', {'lesson':node, 'questions':questions, 'answers_form':answers_form, 'q_form':question_form})
 
+@user_passes_test(lambda u: u.is_staff)
 def lesson_edit(request, node):
     if request.method == 'POST':
         form = NodeEditForm(request.POST, instance=node)
@@ -129,9 +135,12 @@ def file_add(request, node_pk):
         lesson_file = form.save(commit=False)
         lesson_file.node = node; lesson_file.save()
     else:
-        print(form.errors)
+        #print(form.errors)
         return render(request, 'courses/__message.html', {'title':'Błąd przy dodawaniu pliku', 'type':'is-danger'})
     #files = node.lessonfile_set.all()
+    #from django.core import serializers
+    #ser = serializers.serialize('json', [ lesson_file, ])
+    #http = JsonResponse({'file':ser, 'class':'scale-y-0', 'script':'on load toggle .y-1 on me'})
     http = render(request, 'courses/__edit_file.html', {'file':lesson_file, 'class':'scale-y-0', 'script':'on load toggle .y-1 on me'})
     http.write(render_to_string('courses/__message.html', {'title':'Plik dodano pomyślnie', 'type':'is-success'}))
     return http
@@ -185,19 +194,32 @@ def node_view(request, node_pk):
         if request.method == 'POST':
             q_forms = QFormSet(request.POST)
             if q_forms.is_valid():
-                print("PRZED FORMULARZEM")
+                points = 0
+                max_points = node.question_set.count()
                 for q in q_forms:
-                    if not q.check_answers():
-                        return render(request, 'courses/after_test.html', {'passed':False, 'lesson':node})
-                request.user.profile.nodes_passed.add(node)
-                return render(request, 'courses/after_test.html', {'passed':True, 'lesson':node}) 
-            else:
-                print(q_forms.errors)
-                return redirect(request.META.get('HTTP_REFERER'))
-        else:
-            questions = node.question_set.all()
-            q_forms = QFormSet(queryset=questions)
-            return render(request, 'courses/test-view.html', {'lesson':node, 'q_forms':q_forms})
+                    points += q.check_answers()
+                if points == max_points:
+                    request.user.profile.nodes_passed.add(node)
+                #return redirect('courses:after_test', node_pk=node_pk, points=points, max_points=max_points)
+                form = LearningTypeForm(instance = request.user.profile)
+                return render(request,'courses/after_test.html', {'lesson':node, 'points':points, 'max_points':max_points, 'form':form})
+                #return render(request, 'courses/after_test.html', {'passed':True, 'lesson':node}) 
+
+        questions = node.question_set.all()
+        q_forms = QFormSet(queryset=questions)
+        return render(request, 'courses/test-view.html', {'lesson':node, 'q_forms':q_forms})
+    
+# def after_test(request, node_pk, points, max_points):
+#     node = Node.objects.get(pk=node_pk)
+#     form = LearningTypeForm(instance = request.user.profile)
+#     return render(request,'courses/after_test.html', {'lesson':node, 'points':points, 'max_points':max_points, 'form':form})
+
+@login_required
+def after_test(request, node_pk):
+    if request.user.profile.nodes_passed.filter(pk=node_pk).exists():
+        return render(request, 'courses/after_test.html', {'passed':True})
+    else:
+        return render(request, 'courses/after_test.html', {'passed':False})
 
 @login_required
 def lesson_passed(request, lesson_pk):
@@ -219,13 +241,6 @@ def lesson_files(request, node_pk):
     print(files)
     return render(request,'courses/__files.html', {'files':files})
 
-@login_required
-def after_test(request, node_pk):
-    if request.user.profile.nodes_passed.filter(pk=node_pk).exists():
-        return render(request, 'courses/after_test.html', {'passed':True})
-    else:
-        return render(request, 'courses/after_test.html', {'passed':False})
-
 @require_http_methods(['DELETE'])
 @user_passes_test(lambda u: u.is_staff)
 def question_delete(request, question_pk):
@@ -237,10 +252,6 @@ def question_delete(request, question_pk):
         return http
     except:
         return render(request, 'courses/__message.html', {'title':'Nie udało się dodać pytania!', 'type':'is-danger'})
-    #return HttpResponse()
-    # questions = test.question_set.all()
-    # return render(request, 'courses/__questions.html', {'questions':questions})
-
 
 @user_passes_test(lambda u: u.is_staff)
 @require_http_methods(['POST'])
@@ -262,7 +273,7 @@ def question_add(request, test_pk):
             return http
     return render(request, 'courses/__message.html', {'title':'Nie udało się dodać pytania!', 'type':'is-danger'})
     
-
+@user_passes_test(lambda u: u.is_staff)
 def question_update(request, question_pk):
     q = Question.objects.get(pk=question_pk)
     test = q.node

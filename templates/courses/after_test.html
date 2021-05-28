@@ -1,31 +1,46 @@
 {% extends 'base.html' %}
+{% load bulma_tags %}
 {% block content %}
-<div class='container'>
-    <div class='columns is-vcentered'>
-        <div class='column is-half'>
+    <div class='columns is-vcentered' style='flex : 2'>
+        <div class='column is-one-quarter is-offset-one-quarter'>
             <div class='box'>
                 <section class='section'>
                     <p class='title is-3'>Wynik testu</p>
                     <p class='subtitle'>
-                        {% if passed %}
-                        Gratulacje, zaliczyłeś test!
+                        <p class='is-size-4'>
+                        {% if points == max_points %}
+                            Gratulacje, zaliczyłeś test!
                         {% else %}
-                        Nie udało się!
+                            Nie udało się!
                         {% endif %}
+                        </p>
+                        <p class='is-size-5'>Zdobyłeś <i>{{points}} / {{max_points}}</i> punktów</p>
                     </p>
                 </section>
             </div>
         </div>
-        <div class='column'>
+        <div class='column is-one-quarter'>
             <div class='box'>
                 <a class='button box' href='{% url "courses:node_view" lesson.pk %}'>
                     Rozwiąż test ponownie
                 </a>
-                <a class='button box' href='{% url "courses:course_view" lesson.course.slug %}'>
+                <a class='button box' href='{% url "courses:course_edit" lesson.course.slug %}'>
                     Wróć do kursu
                 </a>
             </div>
+            {% if points != max_points %}
+            <div class='box'>
+                <p>Być może bardziej Ci odpowiada inny styl nauki:</p>
+                <form hx-swap='none' hx-trigger='change' hx-post="{% url 'accounts:change_learning' %}">
+                    {% csrf_token %}
+                    {{ form|bulma }}
+                </form>
+            </div>
+            {% endif %}
         </div>
     </div>
-</div>
+    <!-- <div class='columns' style='flex : 1'>
+        <div class='column is-4 is-offset-4'>
+        </div>
+    </div> -->
 {% endblock %}

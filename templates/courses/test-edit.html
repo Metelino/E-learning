@@ -7,7 +7,7 @@
     <div class="hero-body is-flex">
         <nav class='navbar'>
             <div class="navbar-menu">
-                <div class="navbar-start">
+                <div hx-boost='true' class="navbar-start">
                     <a class="navbar-item" href="{% url 'courses:course_edit' lesson.course.slug %}">
                         <strong>Kurs</strong>
                     </a>
@@ -25,13 +25,13 @@
         <nav class="navbar">
             <div class="container">
                 <div class="navbar-menu">
-                    <div class="navbar-end">
-                    <a class="navbar-item" href="{% url 'courses:node_view' lesson.pk %}">
-                        Widok Studenta
-                    </a>
-                    <a class="navbar-item is-active">
-                        Widok Nauczyciela
-                    </a>
+                    <div hx-boost='true' class="navbar-end">
+                        <a class="navbar-item" href="{% url 'courses:node_view' lesson.pk %}">
+                            Widok Studenta
+                        </a>
+                        <a class="navbar-item is-active">
+                            Widok Nauczyciela
+                        </a>
                     </div>
                 </div>
             </div>
@@ -55,12 +55,12 @@
             </div>
         </div>
         <div class='column'>
-            <div class='box'>
+            <div style='position:sticky; top:2%;' class='box'>
                 <div class='block'>
                     <button onclick="add_question()" class='button is-info'>Dodaj nowe pole</button>
                     <button onclick="remove_question()" class='button is-info'>Usuń ostatnie pole</button>
                 </div>
-                <form id='question-form' hx-swap='beforeend' hx-target="#question-list" hx-post="{% url 'courses:question_add' lesson.pk %}">
+                <form id='question-form' _='on submit go to the bottom of the body smoothly' hx-swap='beforeend' hx-target="#question-list" hx-post="{% url 'courses:question_add' lesson.pk %}">
                     {% csrf_token %}
                     <input class='button is-success block' type='submit' value="Zapisz pytanie">
                     {{ q_form|bulma }}

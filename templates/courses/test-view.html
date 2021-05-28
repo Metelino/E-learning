@@ -2,18 +2,17 @@
 {% load bulma_tags %}
 
 {% block content %}
-<!-- <section class="hero is-info is-small block">
-    <div class="hero-body">
-        <p class="title">
-            Test : {{ lesson.name }}
-        </p>
-        <p class="subtitle">
-            Odpowiedz na pytania
-        </p>
-    </div>
-</section> -->
 <section class="hero is-info is-small block">
     <div class="hero-body is-flex">
+        <nav class='navbar'>
+            <div class="navbar-menu">
+                <div hx-boost='true' class="navbar-start">
+                    <a class="navbar-item" href="{% url 'courses:course_edit' lesson.course.slug %}">
+                        <strong>Kurs</strong>
+                    </a>
+                </div>
+            </div>
+        </nav>
         <div class='container has-text-centered'>
             <p class="title">
                 Test : {{ lesson.name }}
@@ -40,22 +39,45 @@
         {% endif %}
     </div>
 </section>
-<div class='container'>
-    <form id='test' class='box' method='POST'>
-        {% csrf_token %}
-        {{ q_forms.management_form }}
-        {% for form in q_forms %}
-            <div class='box'>
-            {{form|bulma}}
-            </div>
-            <!-- {% for field in form %}
-            <div class='field'>
-                {{field.label_tag}}
-                {{field}}
-            </div>
-            {% endfor %} -->
-        {% endfor %}
-        <input class='button is-info' type="submit" value="Sprawdź wyniki">
-    </form>
-</div>
+
+<!-- <div class='container is-fluid is-flex is-justify-content-center'> -->
+<div class='columns is-vcentered' style='flex : 1'>
+        <form id='test' class='column is-half is-offset-one-quarter' method='POST'>
+            {% csrf_token %}
+            {{ q_forms.management_form }}
+            {% for form in q_forms %}
+                <!-- <div class='box question' style='display : none;'> -->
+                <div class='box question'>
+                {{form|bulma}}
+                </div>
+                <!-- {% for field in form %}
+                <div class='field'>
+                    {{field.label_tag}}
+                    {{field}}
+                </div>
+                {% endfor %} -->
+            {% endfor %}
+            <!-- <button type="button" id='right' class='button is-fullwidth'><i class="fas fa-angle-right"></i></button> -->
+            <input id='submit' class='button is-info is-fullwidth' type="submit" value="Sprawdź wyniki">
+        </form>
+        <!-- <script>
+            const test=document.getElementById('test');
+            const submit=document.getElementById('submit');
+            const left=document.getElementById('left');
+            const right=document.getElementById('right');
+            const questions=test.getElementsByClassName('question');
+            var n=0;
+            questions[n].style.display = 'flex';
+            right.onclick = function(){
+                n++;
+                if(n==questions.length-1){
+                    right.style.display = 'none';
+                    submit.style.display = 'inline';
+                }
+                for(var i=0; i<questions.length; i++)
+                    questions[i].style.display = 'none';
+                questions[n].style.display = 'block';
+            }
+        </script> -->
+    </div>
 {% endblock %}

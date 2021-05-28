@@ -121,7 +121,7 @@ class AnswerCreateForm(forms.ModelForm):
         model = Answer
         fields = ['text', 'correct']
         widgets = {
-            'text' : forms.TextInput(attrs = {'class':'input', 'placeholder':"Odpowiedź"}),
+            'text' : forms.TextInput(attrs = {'class':'input', 'placeholder':'Odpowiedź'}),
             'correct': forms.CheckboxInput(attrs = {'class':'checkbox is-large'})
         }
         labels = {
@@ -133,8 +133,8 @@ AnswerCreateFormSet = forms.modelformset_factory(Answer, extra=2, form=AnswerCre
 AnswerEditFormSet = forms.modelformset_factory(Answer, extra=0, form=AnswerCreateForm)
 #AnswerCreateFormSet = forms.modelformset_factory(Answer, extra=2, fields=['text','correct'])
 
-class AnswerEditForm(forms.ModelForm):
-    model = Question
+# class AnswerEditForm(forms.ModelForm):
+#     model = Question
 
 class QuestionForm(forms.ModelForm):
     class Meta():
@@ -143,13 +143,14 @@ class QuestionForm(forms.ModelForm):
         widgets = {'answers': forms.CheckboxSelectMultiple()}
 
     def __init__(self, *args, **kwargs):
-        
+        initial = {'answers' : Answer.objects.none()}
+        kwargs['initial'] = initial
         super().__init__(*args, **kwargs)
+        self.fields['answers'].required = True
         self.fields['answers'].label = self.instance.text
-        self.fields['answers'].initial = Question.objects.none()
         self.fields['answers'].queryset = self.instance.answers
         
-        print(self.fields['answers'].initial)
+        #print(self.fields['answers'].initial)
         #self.fields['answers'].initial = self.instance.answers.first()
         
     def check_answers(self):
@@ -161,4 +162,5 @@ class QuestionForm(forms.ModelForm):
 
 
 QFormSet = forms.modelformset_factory(Question, form=QuestionForm, extra=0) 
+#forms.inlineformset_factory()
 #AnswerFormSet = forms.modelformset_factory(Answer, extra=0, fields=['text'])

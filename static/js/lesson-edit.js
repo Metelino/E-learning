@@ -18,20 +18,13 @@ const notes = document.getElementById('notes');
 // }
 		
 var editor = CKEDITOR.replace('editor', {
-    skin : 'moono-lisa'
+    skin : 'moono-lisa',
+    'height': '400px'
 });
 
 editor.on('change', function(e){
-    //console.log('ZMiana');
     editor.updateElement();
 })
-
-// const editor = document.getElementById('editor');
-// editor.onchange = function(){
-//     editor.updateElement();
-// }
-
-
 
 					
 // function delete_file(e){

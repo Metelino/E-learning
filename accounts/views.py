@@ -52,7 +52,7 @@ def change_learning(request):
     if request.method == 'POST':   
         form = LearningTypeForm(request.POST, instance=request.user.profile)
         if form.is_valid():
-            print(form)
+            #print(form)
             form.save()
             print(request.user.profile.learning_type)
             http = HttpResponse()

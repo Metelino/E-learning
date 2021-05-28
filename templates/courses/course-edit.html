@@ -17,8 +17,9 @@
     </div>
 </section>
 <div class='columns'>
+    {% if user.is_staff %}
     <div class='column'>
-        <div style='position:sticky; top:5%;'>
+        <div style='position:sticky; top:2%;'>
             <form class='box' method="POST" hx-swap='none' hx-post="{% url 'courses:course_edit' course.slug %}" >
                 {% csrf_token %}
                 {{ form|bulma }}
@@ -26,13 +27,10 @@
             </form>
             <div class='is-pulled-right box'>
                 <a href='{% url "courses:node_add" course_slug=course.slug %}' class='button is-success'>Dodaj lekcję</a>
-                {% if course.node_count > 0 %}
-                <button id='delete-lesson' hx-target='#lesson-list' hx-confirm="Czy napweno chcesz usunąć lekcję?" 
-                hx-delete='{% url "courses:node_delete" node_pk=course.get_last_node %}' class='button is-danger'>Usuń ostatnią lekcję</button>
-                {% endif %}
             </div>
         </div>
     </div>
+    {% endif %}
     <div class='column'>
         <div class='box'>
             <div class='hero block is-small is-info'>

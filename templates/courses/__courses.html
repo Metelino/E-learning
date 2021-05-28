@@ -11,25 +11,24 @@
             <p class="subtitle">{{ kurs.author }}</p>
         </div>
         <footer class="card-footer">
-            {% if kurs.author == user %}
             <a class="card-footer-item" href="{% url 'courses:course_edit' course_slug=kurs.slug %}">
-                Edytuj kurs
+                {% if user.is_staff %}
+                    Edytuj kurs
+                {% else %}
+                    Zobacz kurs
+                {% endif %}
             </a>
-            <a class="card-footer-item" hx-swap='outerHTML' hx-confirm="Czy napewno chcesz usunąć kurs?" hx-delete="{% url 'courses:course_delete' course_slug=kurs.slug %}" href="#">
+            {% if kurs.author == user %}
+            <a class="card-footer-item" hx-swap='outerHTML' hx-confirm="Czy napewno chcesz usunąć kurs?" 
+                hx-delete="{% url 'courses:course_delete' course_slug=kurs.slug %}" href="#">
                 Usuń kurs
             </a>
             {% else %}
-            <a class="card-footer-item" href="{% url 'courses:course_view' course_slug=kurs.slug %}">
-                Zobacz kurs
-            </a>
-            {% if kurs not in user.profile.courses.all %}
-            <a href='#' class="card-footer-item" hx-target='this' hx-swap='outerHTML' hx-get="{% url 'accounts:course_signup' course_slug=kurs.slug %}">
-                Zapisz się na kurs
-            </a>
-            <!-- <a href='#' class="card-footer-item" onclick='course_signup(event)' data-url="{% url 'accounts:course_signup' course_slug=kurs.slug %}">
-                Zapisz się na kurs
-            </a> -->
-            {% endif %}
+                {% if kurs not in user.profile.courses.all %}
+                <a href='#' class="card-footer-item" hx-target='this' hx-swap='outerHTML' hx-get="{% url 'accounts:course_signup' course_slug=kurs.slug %}">
+                    Zapisz się na kurs
+                </a>
+                {% endif %}
             {% endif %}   
         </footer>
     </div>

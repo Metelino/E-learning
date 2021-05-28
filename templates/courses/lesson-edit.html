@@ -7,7 +7,7 @@
     <div class="hero-body is-flex">
         <nav class='navbar'>
             <div class="navbar-menu">
-                <div class="navbar-start">
+                <div hx-boost='true' class="navbar-start">
                     <a class="navbar-item" href="{% url 'courses:course_edit' lesson.course.slug %}">
                         <strong>Kurs</strong>
                     </a>
@@ -26,13 +26,13 @@
         <nav class="navbar">
             <div class="container">
                 <div id="navbarMenuHeroA" class="navbar-menu">
-                    <div class="navbar-end">
-                    <a class="navbar-item" href="{% url 'courses:node_view' lesson.pk %}">
-                        Widok Studenta
-                    </a>
-                    <a class="navbar-item is-active">
-                        Widok Nauczyciela
-                    </a>
+                    <div hx-boost='true' class="navbar-end">
+                        <a class="navbar-item" href="{% url 'courses:node_view' lesson.pk %}">
+                            Widok Studenta
+                        </a>
+                        <a class="navbar-item is-active">
+                            Widok Nauczyciela
+                        </a>
                     </div>
                 </div>
             </div>
@@ -43,61 +43,58 @@
 
 <div class='columns'>
     <div class='column'>
-        <div class='box'>
-            <form class='block' method="POST" hx-swap='none' hx-trigger="submit" hx-post="{% url 'courses:node_edit' lesson.pk %}">
+        <div style='position:sticky; top:2%;'>
+            <form id='file-form' class='box' hx-encoding="multipart/form-data" hx-swap='beforeend' hx-target='#file-list' hx-post='{% url "courses:file_add" lesson.pk %}'>
+            <!-- <form id='file-form' class='box' hx-encoding="multipart/form-data" hx-swap='beforeend' hx-target='#file-list'
+             nunjucks-template="" hx-post='{% url "courses:file_add" lesson.pk %}'> -->
                 {% csrf_token %}
-                {{ node_form.media }}
-                {{ node_form|bulma }}
-                <!-- {% for field in node_form %}
                 <div class='field'>
-                    <label class='label'>{{ field.label_tag }}</label>
                     <div class='control'>
-                        {{ field }}
+                        {{ files_form.lesson_type }}
                     </div>
                 </div>
-                {% endfor %} -->
+                <div id='file-field' class="file has-name is-fullwidth is-info block">
+                    <label class="file-label">
+                      {{ files_form.lesson_file }}
+                      <span class="file-cta">
+                        <span class="file-icon">
+                          <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="file-label">
+                          Wybierz plik
+                        </span>
+                      </span>
+                      <span class="file-name">
+                        Plik
+                      </span>
+                    </label>
+                </div>
+                <script>
+                    const fileInput = document.querySelector('#file-field input[type=file]');
+                    fileInput.onchange = () => {
+                        if (fileInput.files.length > 0) {
+                        const fileName = document.querySelector('#file-field .file-name');
+                        fileName.textContent = fileInput.files[0].name;
+                        }
+                    }
+                </script>
+                <input class='button is-success' type="submit" value="Zapisz plik">
+            </form>
+            <form class='box' method="POST" hx-swap='none' hx-trigger="submit" hx-post="{% url 'courses:node_edit' lesson.pk %}">
+                {% csrf_token %}
+                {{ node_form|bulma }}
                 <input class='button is-success' type="submit" value="Zapisz zmiany">
             </form>
-            <div id='messages' class='is-flex block'></div>
         </div>
+            <!-- <div id='messages' class='is-flex block'></div> -->
     </div>
-    <div class='column'>
-        <form id='file-form' class='box' hx-encoding="multipart/form-data" hx-swap='beforeend' hx-target='#file-list' hx-post='{% url "courses:file_add" lesson.pk %}'>
-            {% csrf_token %}
-            <div class='field'>
-                <div class='control'>
-                    {{ files_form.lesson_type }}
-                </div>
-            </div>
-            <div id='file-field' class="file has-name is-fullwidth is-info block">
-                <label class="file-label">
-                  {{ files_form.lesson_file }}
-                  <span class="file-cta">
-                    <span class="file-icon">
-                      <i class="fas fa-upload"></i>
-                    </span>
-                    <span class="file-label">
-                      Wybierz plik
-                    </span>
-                  </span>
-                  <span class="file-name">
-                    Plik
-                  </span>
-                </label>
-            </div>
-            <script>
-                const fileInput = document.querySelector('#file-field input[type=file]');
-                fileInput.onchange = () => {
-                    if (fileInput.files.length > 0) {
-                    const fileName = document.querySelector('#file-field .file-name');
-                    fileName.textContent = fileInput.files[0].name;
-                    }
-                }
-            </script>
-            <input class='button is-success' type="submit" value="Zapisz plik">
-        </form>
+    <div class='column' hx-ext="client-side-templates">
         <div class='box' id='file-list'>
-            {% include 'courses/__edit_file_list.html' %}
+            {% for file in files %}            
+                {% include 'courses/__edit_file.html' %}
+            {% empty %}
+                <h1 class='title is-2 has has-text-centered'>Brak dodanych plików</h1>
+            {% endfor %}
         </div>
     </div>
 </div>

@@ -1,6 +1,7 @@
 console.log("DZIALA")
 const player = document.getElementById('media-player');
-const tabs_nav = document.getElementById("tabs-nav").getElementsByTagName('li');
+const tabs_nav = document.getElementById("tabs-nav").getElementsByTagName('button');
+//const tabs_nav = document.getElementById("tabs-nav").getElementsByTagName('li');
 const tabs = document.querySelectorAll('#tabs-container>div');
 //console.log(tabs);
 //console.log(tabs_nav);
@@ -36,10 +37,11 @@ function openTab(e, tabName) {
     for (i = 0; i < tabs_nav.length; i++) {
         tabs_nav[i].classList.remove("is-active");
     }
-    document.getElementById(tabName).style.display = "flex";
+    document.getElementById(tabName).style.display = "block";
     //document.getElementById(tabName).style.visibility = "visible";
     //document.getElementById(tabName).style.height = "100%";
-    e.target.parentNode.classList.add("is-active");
+    //e.target.parentNode.classList.add("is-active");
+    e.target.classList.add("is-active");
 }
 
 const learning_form = document.getElementById('learning-form');

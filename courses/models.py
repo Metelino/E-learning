@@ -19,11 +19,11 @@ def get_upload_path(instance, filename):
     return f'node_{instance.node.id}_files/{filename}'
 
 class LessonFile(models.Model):
-    LESSON_TYPE = [
-        ('0', 'Wzrokowiec'),
-        ('1', 'Kinestetyk'),
-        ('2', 'Słuchowiec'),
-    ]
+    # LESSON_TYPE = [
+    #     ('0', 'Wzrokowiec'),
+    #     ('1', 'Kinestetyk'),
+    #     ('2', 'Słuchowiec'),
+    # ]
     lesson_type = MultiSelectField(max_length=5, choices=VAK.choices, default='0')
     # lesson_type = models.CharField(max_length=20, choices=VAK.choices, default='0')
     lesson_file = models.FileField(upload_to=get_upload_path)
@@ -49,7 +49,7 @@ class Answer(models.Model):
         return str(self.text)
 
 class Question(models.Model):
-    text = models.CharField(null=True, max_length=200)
+    text = models.CharField(default='Pytanie', max_length=200)
     answers = models.ManyToManyField(Answer)
     node = models.ForeignKey(to='Node', on_delete=models.CASCADE)
     
@@ -72,13 +72,14 @@ class Node(models.Model):
     slug = models.SlugField(allow_unicode=True, blank=True, null=True)
     node_type = models.CharField(choices=NODE_TYPE, default='lesson', max_length=20)
     course = models.ForeignKey(to='Course', on_delete=models.CASCADE)
-    node_number = models.PositiveIntegerField(null=True)
+    node_number = models.PositiveIntegerField(default=0)
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.node_number = self.course.node_count
-            self.course.node_count += 1
-            self.course.save()
+            self.node_number = self.course.node_set.count()
+            #self.node_number = self.course.node_count
+            #self.course.node_count += 1
+            #self.course.save()
 
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
@@ -87,15 +88,21 @@ class Node(models.Model):
         return Node.objects.get(course=self.course, node_number=self.node_number-1)
 
     def delete(self, *args, **kwargs):
-        self.course.node_count -= 1
-        self.course.save()
+        nodes = self.course.node_set.filter(node_number__gt=self.node_number)
+        self.node_number = None
+        self.save()
+        for n in nodes:
+            n.node_number -= 1
+            n.save()
+        #self.course.node_count -= 1
+        #self.course.save()
         super().delete(*args, **kwargs)
 
     def __str__(self):
         return str(self.name)
 
-    class Meta():
-        unique_together = ['course', 'node_number']
+    # class Meta():
+    #     unique_together = ['course', 'node_number']
 
 
 class Course(models.Model):
@@ -112,7 +119,7 @@ class Course(models.Model):
     category = models.CharField(choices=CATEGORIES, default='other', max_length=100)
     desc = models.CharField(max_length=1000)
     slug = models.SlugField(allow_unicode=True, blank=True, unique=True, null=True)
-    node_count = models.PositiveIntegerField(default=0)
+    #node_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return str(self.name)

@@ -1,7 +1,7 @@
-<div class="card block{{class}}" _='{{script}}'>
+<div class="card block {{class}}" _='{{script}}' hx-target='this'>
     <header class="card-header has-background-info">
         <p class="card-header-title">
-            {{ lesson.name }}<i> - {{ lesson.node_type }}</i>
+            {{ lesson.name }}<i>: {{ lesson.get_node_type_display }}</i>
         </p>
     </header>
     <div class="card-content">
@@ -15,6 +15,8 @@
         <a href='{% url "courses:node_view" lesson.pk %}' class="card-footer-item"><i class="fas fa-arrow-right"></i></a>
         <a href='{% url "courses:node_edit" lesson.pk %}' class="card-footer-item"><i class="fas fa-edit"></i></a>
         <!-- <a href='{% url "courses:node_delete" lesson.pk %}' class="card-footer-item"><i class="fas fa-minus-square"></i></a> -->
+        <button hx-confirm="Czy napweno chcesz usunąć lekcję?" hx-swap='outerHTML' 
+                hx-delete='{% url "courses:node_delete" lesson.pk %}' class='button is-danger'><i class="fas fa-minus-square"></i></button>
         {% elif lesson.course in user.profile.courses.all %}
             {% if lesson.node_number == 0 or lesson.get_prev in user.profile.nodes_passed.all %}
             <a href='{% url "courses:node_view" lesson.pk %}' class="card-footer-item"><i class="fas fa-arrow-right"></i></a>
