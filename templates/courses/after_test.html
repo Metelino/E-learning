@@ -24,9 +24,15 @@
                 <a class='button box' href='{% url "courses:node_view" lesson.pk %}'>
                     Rozwiąż test ponownie
                 </a>
+                {% if user == lesson.course.author %}
                 <a class='button box' href='{% url "courses:course_edit" lesson.course.slug %}'>
                     Wróć do kursu
                 </a>
+                {% else %}
+                <a class='button box' href='{% url "courses:course_view" lesson.course.slug %}'>
+                    Wróć do kursu
+                </a>
+                {% endif %}
             </div>
             {% if points != max_points %}
             <div class='box'>

@@ -8,16 +8,11 @@
             {{course.name}}
         </p>
         <p class="subtitle is-6">
-            {% if user.is_staff %}
-                Edytuj kurs
-            {% else %}
-                Przejrzyj wybrany kurs
-            {% endif %}
+            Edytuj kurs
         </p>
     </div>
 </section>
 <div class='columns'>
-    {% if user.is_staff %}
     <div class='column'>
         <div style='position:sticky; top:2%;'>
             <form class='box' method="POST" hx-swap='none' hx-post="{% url 'courses:course_edit' course.slug %}" >
@@ -30,7 +25,6 @@
             </div>
         </div>
     </div>
-    {% endif %}
     <div class='column'>
         <div class='box'>
             <div class='hero block is-small is-info'>
@@ -41,8 +35,17 @@
                 </div>
             </div>
             <!-- <p class='title is-2 has-text-centered'>Lista lekcji</p> -->
-            <div id='lesson-list'>
-                {% include 'courses/__lesson_list.html' %}
+            <p id='no-nodes' class='title is-4 has-text-centered'>Brak lekcji</p>
+            <div id='lesson-list' _="on load or mutation if no me.children
+            show #no-nodes
+            else
+            hide #no-nodes
+            end">
+                {% if lessons %}
+                    {% for lesson in lessons %}
+                        {% include 'courses/__lesson.html' %}
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>

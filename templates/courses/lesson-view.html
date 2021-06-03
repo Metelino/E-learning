@@ -9,9 +9,15 @@
         <nav class='navbar'>
             <div class="navbar-menu">
                 <div hx-boost='true' class="navbar-start">
-                    <a class="navbar-item" href="{% url 'courses:course_edit' lesson.course.slug %}">
-                        <strong>Kurs</strong>
-                    </a>
+                    {% if user == lesson.course.author %}
+                        <a class="navbar-item" href="{% url 'courses:course_edit' lesson.course.slug %}">
+                            <strong>Kurs</strong>
+                        </a>
+                    {% else %}
+                        <a class="navbar-item" href="{% url 'courses:course_view' lesson.course.slug %}">
+                            <strong>Kurs</strong>
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </nav>
@@ -23,7 +29,7 @@
                 Przejrzyj dostępne materiały
             </p>
         </div>
-        {% if user.is_staff %}
+        {% if user == lesson.course.author %}
         <nav class="navbar">
             <div class="container">
                 <div id="navbarMenuHeroA" class="navbar-menu">
@@ -59,6 +65,7 @@
 <div class='columns is-flex-grow-1 is-variable is-2 mb-0 pb-0'>
     <div id='tabs-nav' class='column is-narrow'>
         <div style='position:sticky; top:2%;'>
+            <!-- onclick="openTab(event,'content-tab')" -->
             <button style='display : block; height:25vh' class="button pl-2 pr-2 block is-active" onclick="openTab(event,'content-tab')">
                 <i class="fas fa-align-left"></i>
             </button>
@@ -71,8 +78,7 @@
         <div id='files-tab' style='height:100%; display:none;'>
             <div class='columns mb-0 pb-0' style='height:100%'>
                 <div class='column pb-0 mb-0'>
-                    <iframe class='box' id='media-player' style='width:100%; height:100%;'>
-                    </iframe>
+                    <iframe class='box' id='media-player' style='width:100%; height:100%;'></iframe>
                 </div>
                 <div class='column is-2'>
                     {% if not user.is_staff %}

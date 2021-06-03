@@ -1,14 +1,14 @@
 from django.urls import path
 import django.contrib.auth.views as auth_views
-from .views import (course_list, course_edit, course_add, course_delete,
-node_add, node_edit, node_view, node_delete, after_test, file_delete, file_add, question_delete, question_add, question_update, stream_file, lesson_passed, lesson_files)
+from .views import (course_list, course_edit, course_view, course_add, course_delete,
+node_add, node_edit, node_view, node_delete, file_delete, file_add, question_delete, question_add, question_update, stream_file, lesson_passed, lesson_files)
 
 app_name = 'courses'
 
 urlpatterns = [
     path('course-list/', course_list, name='course_list'),
-    path('course-view/<course_slug>', course_edit, name='course_edit'),
-    # path('course-view/<course_slug>', course_view, name='course_view'),
+    path('course-edit/<course_slug>', course_edit, name='course_edit'),
+    path('course-view/<course_slug>', course_view, name='course_view'),
     path('course-add/', course_add, name='course_add'),
     path('course-delete/<course_slug>', course_delete, name='course_delete'),
     #path('course-view/<course_slug>/', course_view, name='course_view'),

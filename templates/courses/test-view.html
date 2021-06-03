@@ -7,9 +7,15 @@
         <nav class='navbar'>
             <div class="navbar-menu">
                 <div hx-boost='true' class="navbar-start">
-                    <a class="navbar-item" href="{% url 'courses:course_edit' lesson.course.slug %}">
-                        <strong>Kurs</strong>
-                    </a>
+                    {% if user == lesson.course.author %}
+                        <a class="navbar-item" href="{% url 'courses:course_edit' lesson.course.slug %}">
+                            <strong>Kurs</strong>
+                        </a>
+                    {% else %}
+                        <a class="navbar-item" href="{% url 'courses:course_view' lesson.course.slug %}">
+                            <strong>Kurs</strong>
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </nav>
@@ -21,7 +27,7 @@
                 Odpowiedz na pytania
             </p>
         </div>
-        {% if user.is_staff %}
+        {% if user == lesson.course.author %}
         <nav class="navbar">
             <div class="container">
                 <div id="navbarMenuHeroA" class="navbar-menu">

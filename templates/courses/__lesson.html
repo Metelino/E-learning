@@ -12,11 +12,13 @@
     {% if user.is_authenticated %}
     <footer class="card-footer">
         {% if user.is_staff %}
-        <a href='{% url "courses:node_view" lesson.pk %}' class="card-footer-item"><i class="fas fa-arrow-right"></i></a>
-        <a href='{% url "courses:node_edit" lesson.pk %}' class="card-footer-item"><i class="fas fa-edit"></i></a>
-        <!-- <a href='{% url "courses:node_delete" lesson.pk %}' class="card-footer-item"><i class="fas fa-minus-square"></i></a> -->
-        <button hx-confirm="Czy napweno chcesz usunąć lekcję?" hx-swap='outerHTML' 
-                hx-delete='{% url "courses:node_delete" lesson.pk %}' class='button is-danger'><i class="fas fa-minus-square"></i></button>
+            <a href='{% url "courses:node_view" lesson.pk %}' class="card-footer-item"><i class="fas fa-arrow-right"></i></a>
+            {% if user == lesson.course.author %}
+                <a href='{% url "courses:node_edit" lesson.pk %}' class="card-footer-item"><i class="fas fa-edit"></i></a>
+                <!-- <a href='{% url "courses:node_delete" lesson.pk %}' class="card-footer-item"><i class="fas fa-minus-square"></i></a> -->
+                <button hx-confirm="Czy napweno chcesz usunąć lekcję?" hx-swap='outerHTML' 
+                        hx-delete='{% url "courses:node_delete" lesson.pk %}' class='button is-danger'><i class="fas fa-minus-square"></i></button>
+            {% endif %}
         {% elif lesson.course in user.profile.courses.all %}
             {% if lesson.node_number == 0 or lesson.get_prev in user.profile.nodes_passed.all %}
             <a href='{% url "courses:node_view" lesson.pk %}' class="card-footer-item"><i class="fas fa-arrow-right"></i></a>

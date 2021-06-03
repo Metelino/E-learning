@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load bulma_tags %}
+{% load verbatim_include %}
 
 {% block content %}
 <section class="hero is-info is-small block">
@@ -22,11 +23,10 @@
                 Przejrzyj dostępne materiały
             </p>
         </div>
-        {% if user.is_staff %}
         <nav class="navbar">
             <div class="container">
                 <div id="navbarMenuHeroA" class="navbar-menu">
-                    <div hx-boost='true' class="navbar-end">
+                    <div class="navbar-end">
                         <a class="navbar-item" href="{% url 'courses:node_view' lesson.pk %}">
                             Widok Studenta
                         </a>
@@ -37,16 +37,15 @@
                 </div>
             </div>
         </nav>
-        {% endif %}
     </div>
 </section>
 
 <div class='columns'>
     <div class='column'>
-        <div style='position:sticky; top:2%;'>
+        <div style='position:sticky; top:2%;' hx-ext="client-side-templates, json-enc">
             <form id='file-form' class='box' hx-encoding="multipart/form-data" hx-swap='beforeend' hx-target='#file-list' hx-post='{% url "courses:file_add" lesson.pk %}'>
             <!-- <form id='file-form' class='box' hx-encoding="multipart/form-data" hx-swap='beforeend' hx-target='#file-list'
-             nunjucks-template="" hx-post='{% url "courses:file_add" lesson.pk %}'> -->
+             nunjucks-template="#temp" hx-post='{% url "courses:file_add" lesson.pk %}'> -->
                 {% csrf_token %}
                 <div class='field'>
                     <div class='control'>
@@ -88,13 +87,28 @@
         </div>
             <!-- <div id='messages' class='is-flex block'></div> -->
     </div>
-    <div class='column' hx-ext="client-side-templates">
-        <div class='box' id='file-list'>
-            {% for file in files %}            
-                {% include 'courses/__edit_file.html' %}
-            {% empty %}
-                <h1 class='title is-2 has has-text-centered'>Brak dodanych plików</h1>
-            {% endfor %}
+    <div class='column'>
+        <div class='box'>
+            <section class='hero is-info is-small block'>
+                <div class='hero-body'>
+                    <div class='container'>
+                        <p class="title is-4">
+                            Dodane materiały
+                        </p>
+                    </div>
+                </div>
+            </section>
+            <p id='no-nodes' class='title is-5 has-text-centered'>Brak materiałów</p>
+            <div id='file-list' _="on load or mutation if no me.children
+                show #no-nodes
+                else
+                hide #no-nodes
+                end">
+                
+                {% for file in files %}            
+                    {% include 'courses/__edit_file.html' %}
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>

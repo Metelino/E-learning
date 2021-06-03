@@ -146,7 +146,7 @@ class QuestionForm(forms.ModelForm):
         initial = {'answers' : Answer.objects.none()}
         kwargs['initial'] = initial
         super().__init__(*args, **kwargs)
-        self.fields['answers'].required = True
+        self.fields['answers'].required = False
         self.fields['answers'].label = self.instance.text
         self.fields['answers'].queryset = self.instance.answers
         

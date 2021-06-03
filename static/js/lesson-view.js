@@ -27,6 +27,15 @@ async function pass_lesson(e){
     
 }
 
+// window.onload = function(){
+//     tabs_nav[0].onclick = function(e){
+//         openTab(e, 'content-tab');
+//     }
+//     tabs_nav[1].onclick = function(e){
+//         openTab(e, 'files-tab');
+//     }
+// }
+
 function openTab(e, tabName) {
     var i;
     for (i = 0; i < tabs.length; i++) {

@@ -49,8 +49,19 @@
                         </p>
                     </div>
                 </section>
-                <div id='question-list'>
-                    {% include 'courses/__question_list.html' %}
+                <p id='no-q' class='title is-4 has-text-centered'>
+                    Brak pytań
+                </p>
+                <div id='question-list' _="on load or mutation if no me.children
+                show #no-q
+                else
+                hide #no-q
+                end">
+                    {% if questions %}
+                        {% for q in questions %}
+                            {% include 'courses/__question.html' %}
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         </div>
