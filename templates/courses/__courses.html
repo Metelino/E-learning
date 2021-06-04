@@ -1,6 +1,7 @@
 {% if courses %}
 {% for kurs in courses %}
-    <div class='card block' hx-target='this'>
+    <div class='card block scale-y-1' _='on del toggle .y-0 on me then settle then remove me'
+    hx-target='this'>
         <div class='card-header'>
             <p class="card-header-title title is-4">
                 {{ kurs.name }}
@@ -13,7 +14,7 @@
         <footer class="card-footer">
             {% if user == kurs.author %}
                 <a class="card-footer-item" href="{% url 'courses:course_edit' course_slug=kurs.slug %}">Edytuj kurs</a>
-                <a class="card-footer-item" hx-swap='outerHTML' hx-confirm="Czy napewno chcesz usunąć kurs?" 
+                <a class="card-footer-item" hx-swap='none' hx-confirm="Czy napewno chcesz usunąć kurs?" 
                     hx-delete="{% url 'courses:course_delete' course_slug=kurs.slug %}" href="#">
                     Usuń kurs
                 </a>

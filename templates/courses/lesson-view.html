@@ -8,7 +8,7 @@
     <div class="hero-body is-flex">
         <nav class='navbar'>
             <div class="navbar-menu">
-                <div hx-boost='true' class="navbar-start">
+                <div class="navbar-start">
                     {% if user == lesson.course.author %}
                         <a class="navbar-item" href="{% url 'courses:course_edit' lesson.course.slug %}">
                             <strong>Kurs</strong>
@@ -46,20 +46,6 @@
         </nav>
         {% endif %}
     </div>
-    <!-- <div class="hero-foot">
-        <nav id='tabs-nav' class='tabs is-boxed is-fullwidth is-small'>
-            <div class='container'>
-                <ul>
-                    <li class="is-active" onclick="openTab(event,'content-tab')">
-                        <a>Treść</a>
-                    </li>
-                    <li onclick="openTab(event,'files-tab')">
-                        <a>Pliki</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </div> -->
 </section>
 
 <div class='columns is-flex-grow-1 is-variable is-2 mb-0 pb-0'>
@@ -82,33 +68,41 @@
                 </div>
                 <div class='column is-2'>
                     {% if not user.is_staff %}
-                    <div class='box'>
-                        {% if lesson in user.profile.nodes_passed.all %}
-                        <input data-url="{% url 'courses:lesson_passed' lesson.pk %}" type='checkbox' disabled checked>
-                        {% else %}
-                        <input data-url="{% url 'courses:lesson_passed' lesson.pk %}" onclick="pass_lesson(event)" type='checkbox'>
-                        {% endif %}
-                        <span><strong>Zalicz lekcję</strong></span> 
-                    </div>
+                        <div class='box'>
+                            {% if lesson in user.profile.nodes_passed.all %}
+                            <button class='button is-fullwidth' disabled>
+                                <span class="icon-text">
+                                    <span class='icon'>
+                                        <i class="far fa-thumbs-up is-large"></i>
+                                    </span>
+                                    <span>Zalicz lekcję</span>
+                                </span>
+                            </button>
+                            {% else %}
+                            <button class='button is-fullwidth' hx-swap='none' hx-get="{% url 'courses:lesson_passed' lesson.pk %}" _='on success set {disabled:true} on me'>
+                                <span class="icon-text">
+                                    <span class='icon'>
+                                        <i class="far fa-thumbs-up is-large"></i>
+                                    </span>
+                                    <span>Zalicz lekcję</span>
+                                </span>
+                            </button>
+                            {% endif %}
+                        </div>
+                        {% include 'courses/__files.html' %}
                     {% else %}
-                    <div class='box'>
-                        <form id='learning-form' method='POST' data-file-url="{% url 'courses:lesson_files' lesson.pk %}" action="{% url 'accounts:change_learning' %}">
+                        <form class='box' id='learning-form' hx-trigger='change' hx-swap='none' hx-post="{% url 'accounts:change_learning' %}">
                             {% csrf_token %}
                             {{ l_form|bulma }}
-                            <!-- <div class=field>
-                                <div class='label'>
-                                    {{l_form.learning_type.label_tag}}
-                                </div>
-                                <div class='control'>
-                                    {{l_form.learning_type}}
-                                </div>
-                            </div> -->
                         </form>
-                    </div>
+                            <!-- <form id='learning-form' method='POST' data-file-url="{% url 'courses:lesson_files' lesson.pk %}" action="{% url 'accounts:change_learning' %}">
+                                {% csrf_token %}
+                                {{ l_form|bulma }}
+                            </form> -->
+                        <div id='file-list' hx-trigger='success from:#learning-form' hx-get="{% url 'courses:lesson_files' lesson.pk %}" hx-swap='innerHTML'>
+                            {% include 'courses/__files.html' %}
+                        </div>
                     {% endif %}
-                    <div id='file-list'>
-                        {% include 'courses/__files.html' %}
-                    </div>
                 </div>
             </div>
         </div>      

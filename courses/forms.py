@@ -1,6 +1,5 @@
 from django import forms
 from .models import Course, Node, LessonFile, Question, Answer, VAK
-#from ckeditor.widgets import CKEditorWidget
 
 class CourseForm(forms.ModelForm):
     class Meta():

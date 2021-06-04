@@ -23,6 +23,11 @@
     transform: scaleY(1); 
 }
 
+.scale-y{   
+  transform-origin: top;
+  transition: transform 0.26s ease;
+}
+
 .y-0{
     transform: scaleY(0); 
 }

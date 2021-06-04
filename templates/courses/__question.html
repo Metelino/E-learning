@@ -1,4 +1,6 @@
-<div class="card block {{class}}" hx-target='this' _="{{script}}">
+<div class="card block scale-y y-0" hx-target='this' 
+    _="on load toggle .y-1 .y-0 end
+    on del toggle .y-1 .y-0 then settle then remove me">
     <header class="card-header has-background-primary">
         <p class="card-header-title">
             {{ q.text }}
@@ -15,7 +17,7 @@
         <!-- <a href="#" _='on click set display to none on me then set display to block on closest .card' 
         class="card-footer-item"><i class="fas fa-edit"></i></a> -->
         <a href="#" hx-swap='outerHTML' hx-get="{% url 'courses:question_update' q.pk %}" class="card-footer-item"><i class="fas fa-edit"></i></a>
-        <a href='#' hx-confirm='Czy napewno chcesz usunąć pytanie?' hx-swap='outerHTML'
+        <a href='#' hx-confirm='Czy napewno chcesz usunąć pytanie?' hx-swap='none'
             hx-delete='{% url "courses:question_delete" q.pk %}' class="card-footer-item"><i class="fas fa-minus-square"></i></a>
     </footer>
 </div>

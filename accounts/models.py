@@ -23,6 +23,9 @@ class Profile(models.Model):
 
     def is_in_course(self, course):
         return self.courses.filter(pk=course.pk).exists()
+
+    def __str__(self):
+        return self.user.username + "'s profile"
     #lessons_passed = models.ManyToManyField(Node)
 
 # class UserInCourse(models.Model):

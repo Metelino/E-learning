@@ -6,7 +6,7 @@
     <div class="hero-body is-flex">
         <nav class='navbar'>
             <div class="navbar-menu">
-                <div hx-boost='true' class="navbar-start">
+                <div class="navbar-start">
                     {% if user == lesson.course.author %}
                         <a class="navbar-item" href="{% url 'courses:course_edit' lesson.course.slug %}">
                             <strong>Kurs</strong>

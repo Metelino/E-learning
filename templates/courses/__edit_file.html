@@ -1,4 +1,6 @@
-<div class="card block {{class}}" hx-target='this' _='{{script}}'>
+<div class="card block scale-y y-0" hx-target='this' 
+    _="on load toggle .y-1 .y-0 end
+    on del toggle .y-1 .y-0 then settle then remove me">
     <div class="card-content">
         <div class='media'>
             <div class="media-left">
@@ -20,7 +22,9 @@
     {% if user.is_authenticated %}
     <footer class="card-footer">
         <!-- <a href='#' class="card-footer-item"><i class="fas fa-edit"></i></a> -->
-        <button hx-swap='outerHTML' hx-confirm="Czy napewno chcesz usunąć plik?" hx-delete="{% url 'courses:file_delete' file.pk %}" class="card-footer-item"><i class="fas fa-minus-square"></i></button>
+        <button hx-swap='none' hx-confirm="Czy napewno chcesz usunąć plik?" hx-delete="{% url 'courses:file_delete' file.pk %}" class="card-footer-item button">
+            <i class="fas fa-minus-square"></i>
+        </button>
         <!-- <a href="{% url 'courses:file_delete' file.pk %}" onclick="delete_file(event)" class="card-footer-item"><i class="fas fa-minus-square"></i></a> -->
     </footer>
     {% endif %}

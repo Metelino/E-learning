@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect
 #from django.contrib import auth
@@ -48,6 +49,21 @@ def course_singup(request, course_slug):
     # except:
     #     return HttpResponse('ERROR')
 
+# def change_learning(request):
+#     if request.method == 'POST':   
+#         form = LearningTypeForm(request.POST, instance=request.user.profile)
+#         if form.is_valid():
+#             #print(form)
+#             form.save()
+#             print(request.user.profile.learning_type)
+#             http = HttpResponse()
+#             http['OK'] = True
+#             return http
+#         else:
+#             http = HttpResponse()
+#             http['OK'] = False
+#             return http
+
 def change_learning(request):
     if request.method == 'POST':   
         form = LearningTypeForm(request.POST, instance=request.user.profile)
@@ -56,12 +72,11 @@ def change_learning(request):
             form.save()
             print(request.user.profile.learning_type)
             http = HttpResponse()
-            http['OK'] = True
+            http['HX-Trigger'] = 'success'
+            http.write(render_to_string('courses/__message.html', {'type':'is-success', 'title':'Pomyślnie zmieniono styl uczenia się!'}))
             return http
         else:
-            http = HttpResponse()
-            http['OK'] = False
-            return http
+            return render(request,'courses/__message.html', {'type':'is-danger', 'title':'Nie udało się zmienić stylu uczenia!'})
 
 @login_required
 def questionnairy_view(request):

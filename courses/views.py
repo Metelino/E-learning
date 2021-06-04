@@ -45,7 +45,11 @@ def course_delete(request, course_slug):
         course = Course.objects.get(slug=course_slug)
         if request.user.is_superuser or request.user == course.author:
             course.delete()
-            return render(request, 'courses/__message.html', {'type':'is-success', 'title':'Pomyślnie usnięto kurs!'})
+            http = HttpResponse()
+            http['HX-Trigger'] = 'del'
+            http.write(render_to_string('courses/__message.html', {'type':'is-success', 'title':'Pomyślnie usnięto kurs!'}, request))
+            return http
+            #return render(request, 'courses/__message.html', {'type':'is-success', 'title':'Pomyślnie usnięto kurs!'})
         return render(request, 'courses/__message.html', {'type':'is-danger', 'title':'Nie masz uprawnień!'})
     except:
         return render(request, 'courses/__message.html', {'type':'is-danger', 'title':'Nie udało się usunąć kursu!'})
@@ -82,18 +86,23 @@ def course_edit(request, course_slug):
 @require_http_methods(['DELETE'])
 @user_passes_test(lambda u: u.is_staff)
 def node_delete(request, node_pk):
-    #try:
+    http = HttpResponse()
+    try:
         node = Node.objects.get(pk=node_pk)
-        http = render(request, 'courses/__lesson.html', {'lesson': node, 'class':'scale-y-0', 'class':'scale-y-1', 'script':'on load toggle .y-0 on me\n on transitionend remove me'})
+        #http = render(request, 'courses/__lesson.html', {'lesson': node, 'class':'scale-y-0', 'class':'scale-y-1', 'script':'on load toggle .y-0 on me\n on transitionend remove me'})
         #course = node.course
         if request.user.is_superuser or node.course.author == request.user:
             node.delete()
             http.write(render_to_string('courses/__message.html', {'title':'Usunięto lekcję!', 'type':'is-success'}))
+            http['HX-Trigger'] = 'del'
             return http
         http.write(render_to_string('courses/__message.html', {'title':'Nie masz uprawnień!', 'type':'is-danger'}))
         return http
-    # except:
-    #     return render(request, 'courses/__message.html', {'title':'Nie udało się usunąć lekcji! Lekcja już nie istnieje.', 'type':'is-danger'})
+    except:
+        # http.status_code = 500
+        # http.write(render_to_string('courses/__message.html', {'title':'Nie udało się usunąć lekcji! Lekcja już nie istnieje.', 'type':'is-danger'}))
+        #return http
+        return render(request, 'courses/__message.html', {'title':'Nie udało się usunąć lekcji! Lekcja już nie istnieje.', 'type':'is-danger'})
 
 @user_passes_test(lambda u: u.is_staff)
 def test_edit(request, node):   
@@ -143,9 +152,11 @@ def file_add(request, node_pk):
 def file_delete(request, file_pk):
     try:
         lesson_file = LessonFile.objects.get(pk=file_pk)
-        http = render(request, 'courses/__edit_file.html', {'file':lesson_file, 'class':'scale-y-1', 'script':'on load toggle .y-0 on me\n on transitionend remove me'})
+        #http = render(request, 'courses/__edit_file.html', {'file':lesson_file, 'class':'scale-y-1', 'script':'on load toggle .y-0 on me\n on transitionend remove me'})
         lesson_file.lesson_file.delete() #usuwanie pliku w media
         lesson_file.delete()
+        http = HttpResponse()
+        http['HX-Trigger'] = 'del'
         http.write(render_to_string('courses/__message.html', {'title':'Plik usnięto pomyślnie!', 'type':'is-success'}))
         return http
     except:
@@ -181,6 +192,11 @@ def node_add(request, course_slug):
 @login_required
 def node_view(request, node_pk):
     node = Node.objects.get(pk=node_pk)
+    if not request.user.is_staff:
+        if not node.course in request.user.profile.courses.all():
+            return redirect('accounts:course_list')
+        if not (node.node_number == 0 or node.get_prev() in request.user.profile.nodes_passed.all()):
+            return redirect('courses:course_view', node.course.slug)
     if node.node_type == 'lesson':
         files = LessonFile.get_files(node, request.user.profile.learning_type)
         # files = files[request.user.profile.learning_type]
@@ -218,12 +234,14 @@ def lesson_passed(request, lesson_pk):
         lesson = Node.objects.get(pk=lesson_pk)
         request.user.profile.nodes_passed.add(lesson)
         http = HttpResponse()
-        http['OK'] = True
+        http['HX-Trigger'] = 'success'
+        http.write(render_to_string('courses/__message.html', {'title':'Lekcja zaliczona.', 'type':'is-success'}))
         return http
     except:
-        http = HttpResponse()
-        http['OK'] = False
-        return http
+        return render(request, 'courses/__message.html', {'title':'Nie udało się zaliczyć lekcji!', 'type':'is-danger'})
+        # http = HttpResponse()
+        # http['OK'] = False
+        # return http
 
 @login_required
 def lesson_files(request, node_pk):
@@ -237,9 +255,11 @@ def lesson_files(request, node_pk):
 def question_delete(request, question_pk):
     try:
         q = Question.objects.get(pk=question_pk)
-        http = render(request, 'courses/__question.html', {'q':q, 'class':'scale-y-1', 'script':'on load toggle .y-0 on me\n on transitionend remove me'})
-        http.write(render_to_string('courses/__message.html', {'title':'Pytanie usunięto pomyślnie', 'type':'is-success'}))
         q.delete()
+        http = HttpResponse()
+        http['HX-Trigger'] = 'del'
+        #http = render(request, 'courses/__question.html', {'q':q, 'class':'scale-y-1', 'script':'on load toggle .y-0 on me\n on transitionend remove me'})
+        http.write(render_to_string('courses/__message.html', {'title':'Pytanie usunięto pomyślnie', 'type':'is-success'}))
         return http
     except:
         return render(request, 'courses/__message.html', {'title':'Nie udało się dodać pytania!', 'type':'is-danger'})

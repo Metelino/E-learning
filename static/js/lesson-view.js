@@ -13,27 +13,18 @@ function set_file(event){
     player.src = event.target.dataset.fileUrl;
 }
 
-async function pass_lesson(e){
-    var url = e.target.dataset.url;
-    console.log(url);
-    await fetch(url).then(res => {
-        console.log(res.ok);
-        if(res.ok){
-            e.target.disabled=true;
-        }
-        else
-            console.log("ERROR");
-    });
+// async function pass_lesson(e){
+//     var url = e.target.dataset.url;
+//     console.log(url);
+//     await fetch(url).then(res => {
+//         console.log(res.ok);
+//         if(res.ok){
+//             e.target.disabled=true;
+//         }
+//         else
+//             console.log("ERROR");
+//     });
     
-}
-
-// window.onload = function(){
-//     tabs_nav[0].onclick = function(e){
-//         openTab(e, 'content-tab');
-//     }
-//     tabs_nav[1].onclick = function(e){
-//         openTab(e, 'files-tab');
-//     }
 // }
 
 function openTab(e, tabName) {
@@ -53,31 +44,31 @@ function openTab(e, tabName) {
     e.target.classList.add("is-active");
 }
 
-const learning_form = document.getElementById('learning-form');
-const file_list = document.getElementById('file-list');
-learning_form.oninput = async function(e){
-    //learning_form.submit();
-    formData = new FormData(learning_form);
-    console.log('Zmieniam styl');
-    const url = learning_form.action;
+//const learning_form = document.getElementById('learning-form');
+//const file_list = document.getElementById('file-list');
+// learning_form.oninput = async function(e){
+//     //learning_form.submit();
+//     formData = new FormData(learning_form);
+//     console.log('Zmieniam styl');
+//     const url = learning_form.action;
 
-    await fetch(url, {method : 'POST', body : formData}).then(res => {
-        if(!res.ok){
-            console.log("ERROR przy zmianie stylu");
-        }  
-    });
+//     await fetch(url, {method : 'POST', body : formData}).then(res => {
+//         if(!res.ok){
+//             console.log("ERROR przy zmianie stylu");
+//         }  
+//     });
 
-    const file_url = learning_form.dataset.fileUrl;
-    await fetch(file_url).then(res => {
-        if(res.ok){
-            res.text().then(res => {
-                //const parser = new DOMParser();
-                //const file_html = parser.parseFromString(res, "text/html");
-                file_list.innerHTML = res;
-                //file_list.appendChild(file_html.body.firstChild);
-            })
-        }
-        else
-            console.log('ERROR przy pobieraniu plików');
-    });
-}
+//     const file_url = learning_form.dataset.fileUrl;
+//     await fetch(file_url).then(res => {
+//         if(res.ok){
+//             res.text().then(res => {
+//                 //const parser = new DOMParser();
+//                 //const file_html = parser.parseFromString(res, "text/html");
+//                 file_list.innerHTML = res;
+//                 //file_list.appendChild(file_html.body.firstChild);
+//             })
+//         }
+//         else
+//             console.log('ERROR przy pobieraniu plików');
+//     });
+// }

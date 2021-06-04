@@ -1,6 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
+<section class="hero is-info is-small block">
+    <div class="hero-body">
+        <p class="title is-4">
+            Konto
+        </p>
+        <p class="subtitle is-6">
+            {% if user.is_staff %}   
+                Dodaj/edytuj stworzone kursy
+            {% else %}
+                Zmień styl uczenia się / przejrzyj listę twoich kursów
+            {% endif %}
+        </p>
+    </div>
+</section>
 <div class='columns'>
     {% if user.is_staff %}
     <div class='column is-narrow' style='position: sticky;'>

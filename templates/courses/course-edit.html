@@ -20,8 +20,8 @@
                 {{ form|bulma }}
                 <input class='button is-success' type="submit" value="Zapisz zmiany">
             </form>
-            <div class='is-pulled-right box'>
-                <a href='{% url "courses:node_add" course_slug=course.slug %}' class='button is-success'>Dodaj lekcję</a>
+            <div class='box'>
+                <a href='{% url "courses:node_add" course_slug=course.slug %}' class='button is-success is-fullwidth'>Dodaj lekcję</a>
             </div>
         </div>
     </div>
