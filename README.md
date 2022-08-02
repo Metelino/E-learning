@@ -38,9 +38,13 @@ Application exposes REST API for use for frontend apps.
 
 ## Pictures
 <p>Edit created courses</p>
-<img src='./img/kursy_admin.png' width=500, height=300>
+<img src='./img/kursy_admin.png' width=600, height=350>
 <p>Edit course, add lessons/tests</p>
-<img src='./img/lekcje_admin.png' width=500, height=300>
+<img src='./img/lekcje_admin.png' width=600, height=350>
+<p>Edit lesson</p>
+<img src='./img/edycja_lekcji.png' width=600, height=350>
+<p>Edit test</p>
+<img src='./img/test_edycja.png' width=600, height=350>
 
 ## Setup
 To run you need python installed. All project dependencies are listed in requirements.txt.
