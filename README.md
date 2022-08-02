@@ -38,7 +38,7 @@ Application exposes REST API for use for frontend apps.
 
 ## Pictures
 Edit created courses
-(./img/kursy_admin)
+(./img/kursy_admin.png)
 
 ## Setup
 To run you need python installed. All project dependencies are listed in requirements.txt.
