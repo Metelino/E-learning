@@ -62,8 +62,7 @@ To start server change directory to folder with manage.py file. Then run:\
 `python manage.py runserver`
 
 ## Usage
-There is created admin profile.\
-Username: Metelino, password: admin\
+There is created admin profile: <code>Username: Metelino, password: admin</code>\
 which can access django admin page.
 Admin can give a user staff status which authorizes them to make courses. 
 After logging in its simply a matter of using the website functionalities.
