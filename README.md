@@ -63,3 +63,6 @@ There is created admin profile: <code>Username: Metelino, password: admin</code>
 which can access django admin page.
 Admin can give a user staff status which authorizes them to make courses. 
 After logging in its simply a matter of using the website functionalities.
+
+## Things to improve
+Landing page could definitely use so work. Could maybe add a redirect to a recently visited course.
