@@ -19,9 +19,6 @@ Staff memebers can create new courses with multiple lessons or tests.
 Course creators can add multimedia files to individual lessons assigned to given learning style. 
 Users can sign up for a course and pass lessons or tests one by one.
 
-Backend application for purposes of renting cars. 
-Application exposes REST API for use for frontend apps. 
-
 ## Technologies Used
 
 - Django - version 3.2.7
@@ -41,21 +38,16 @@ Application exposes REST API for use for frontend apps.
 ## Pictures
 <p>Edit created courses</p>
 <img src='./img/kursy_admin.png' width=600, height=350>
-<hr>
 <p>Edit course, add lessons/tests</p>
 <img src='./img/lekcje_admin.png' width=600, height=350>
-<hr>
 <p>Edit lesson</p>
 <img src='./img/edycja_lekcji.png' width=600, height=350>
-<hr>
 <p>Edit test</p>
 <img src='./img/test_edycja.png' width=600, height=350>
-<hr>
-<p>Read teacher notes, uploaded files</p>
+<p>Read teacher notes</p>
 <img src='./img/lekcja_tekst.png' width=500, height=300>
-</br>
+<p>Watch uploaded files</p>
 <img src='./img/lekcja_materiał.png' width=500, height=300>
-<hr>
 <p>Solve test</p>
 <img src='./img/test.png' width=600, height=350>
 
