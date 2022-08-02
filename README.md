@@ -37,8 +37,8 @@ Application exposes REST API for use for frontend apps.
 - solve multiple-choice tests 
 
 ## Pictures
-Edit created courses
-(./img/kursy_admin.png)
+Edit created courses/
+<img src='./img/kursy_admin.png' width=500, height=300>
 
 ## Setup
 To run you need python installed. All project dependencies are listed in requirements.txt.
