@@ -48,7 +48,7 @@ Application exposes REST API for use for frontend apps.
 <p>Edit test</p>
 <img src='./img/test_edycja.png' width=600, height=350>
 <p>Read teacher notes, uploaded files</p>
-<div style='display:flex; flex-direction:row'>
+<div style='display:flex; flex-direction:row; gap:1rem'>
   <img src='./img/lekcja_tekst.png' width=500, height=300><img src='./img/lekcja_materiał.png' width=500, height=300>
 </div>
 <p>Solve test</p>
