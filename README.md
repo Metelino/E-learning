@@ -39,18 +39,23 @@ Application exposes REST API for use for frontend apps.
 - styled with bulma
 
 ## Pictures
-<h3>Edit created courses</h3>
+<p>Edit created courses</p>
 <img src='./img/kursy_admin.png' width=600, height=350>
-<h3>Edit course, add lessons/tests</h3>
+<hr>
+<p>Edit course, add lessons/tests</p>
 <img src='./img/lekcje_admin.png' width=600, height=350>
+<hr>
 <p>Edit lesson</p>
 <img src='./img/edycja_lekcji.png' width=600, height=350>
+<hr>
 <p>Edit test</p>
 <img src='./img/test_edycja.png' width=600, height=350>
+<hr>
 <p>Read teacher notes, uploaded files</p>
 <img src='./img/lekcja_tekst.png' width=500, height=300>
 </br>
 <img src='./img/lekcja_materiał.png' width=500, height=300>
+<hr>
 <p>Solve test</p>
 <img src='./img/test.png' width=600, height=350>
 
