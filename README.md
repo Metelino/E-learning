@@ -21,6 +21,7 @@ Users can sign up for a course and pass lessons or tests one by one.
 
 ## Technologies Used
 
+- Python - version 3.9.7
 - Django - version 3.2.7
 - Bulma - 0.92
 - htmx - 1.3.3
