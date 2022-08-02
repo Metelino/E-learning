@@ -35,6 +35,8 @@ Application exposes REST API for use for frontend apps.
 - get assigned VAC learning style by solving VAC test (can approach multiple times)
 - read notes written by teacher and view materials, unlock next lesson after finishing previous one
 - solve multiple-choice tests 
+- asynchronous page updates with htmx
+- styled with bulma
 
 ## Pictures
 <p>Edit created courses</p>
@@ -45,6 +47,10 @@ Application exposes REST API for use for frontend apps.
 <img src='./img/edycja_lekcji.png' width=600, height=350>
 <p>Edit test</p>
 <img src='./img/test_edycja.png' width=600, height=350>
+<p>Read teacher notes, uploaded files</p>
+<img src='./img/lekcja_materiał.png' width=500, height=300><img src='./img/lekcja_test.png' width=500, height=300>
+<p>Solve test</p>
+<img src='./img/test.png' width=600, height=350>
 
 ## Setup
 To run you need python installed. All project dependencies are listed in requirements.txt.
